@@ -1,0 +1,26 @@
+[
+  {
+    "id": "talk-1",
+    "title": "Introduction to AI Agents",
+    "speaker": "Alice Johnson",
+    "time": "09:00 - 10:00",
+    "room": "Hall A",
+    "description": "An overview of autonomous AI agent architectures and workflows."
+  },
+  {
+    "id": "talk-2",
+    "title": "Scaling Cloud Infrastructure",
+    "speaker": "Bob Smith",
+    "time": "10:15 - 11:15",
+    "room": "Hall B",
+    "description": "Best practices for deploying and scaling modern cloud services."
+  },
+  {
+    "id": "talk-3",
+    "title": "Model Context Protocol in Practice",
+    "speaker": "Carol White",
+    "time": "11:30 - 12:30",
+    "room": "Hall A",
+    "description": "Integrating LLMs with tools and data using the Model Context Protocol."
+  }
+]
