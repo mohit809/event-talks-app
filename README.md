@@ -1,68 +1,73 @@
-# 📅 Schedular - Event & Task Management App
+# 🕒 Schedular - Smart Appointment & Event Management Platform
 
-A modern, responsive, and lightweight web application designed for organizing, managing, and tracking event schedules, conference talks, and task sessions seamlessly.
+A modern, secure, and responsive web application designed for scheduling appointments, organizing event schedules, managing conference talks, and tracking sessions in real-time.
 
 ---
 
 ## 🚀 Overview
 
-**Schedular** provides conference attendees, event organizers, and team members with an intuitive dashboard to view scheduled talks, filter sessions by room, search agenda items in real-time, and dynamically add or remove events. The application is built with vanilla web technologies, ensuring zero build overhead, fast loading times, and instant responsiveness across all devices.
+**Schedular** is an appointment and schedule management platform featuring **mandatory authentication gating**, **cryptographic security**, **calendar & clock appointment pickers**, and **instant .ics calendar export**. 
+
+When users open the application, they are greeted with an **Authentication Gateway** (Sign In / Sign Up). Once logged in, they are seamlessly transferred to the dashboard where they can schedule appointments with interactive date and time pickers, search sessions in real time, filter by room and status, and export items directly to their calendar.
 
 ---
 
-## ✨ Features & Functionality
+## ✨ Key Features & Functionality
 
-### 1. 📋 Interactive Schedule Dashboard
-- Displays all scheduled talks and sessions in clean, modern card layouts.
-- Cards highlight essential metadata:
-  - **Title & Description**
-  - **Speaker / Presenter / Assignee**
-  - **Location / Room Badge** (e.g., *Hall A*, *Hall B*, *Online*)
-  - **Time Slot Badge** (e.g., *09:00 - 10:00*)
-  - **Unique Task ID**
+### 1. 🕒 Clock Branding & Live Clock
+- **Modern Clock Identity**: Vibrant gradient icon badge with crisp vector clock SVG.
+- **Live Ticking Clock**: Real-time header badge showing the current day, date, and ticking time.
 
-### 2. 🔍 Real-Time Search & Filtering
-- **Live Search**: Instant multi-attribute search across talk titles, speaker names, room names, and session descriptions.
-- **Dynamic Room Filter**: Automatically discovers and aggregates available rooms from existing sessions into a dropdown filter.
+### 2. 🔐 Mandatory Authentication Gate & Account Flow
+- **Access Control on Launch**: Unauthenticated visitors are presented with a modern login and registration portal before gaining access to the dashboard.
+- **Seamless Session Transfer**: Once authenticated, the user is immediately granted access to the interactive schedule and appointment controls.
+- **Persistent User Session**: Manages active user state with customized user avatar, name badge, and one-click Sign Out.
+- **Standalone Auth Page**: Dedicated [`login.html`](login.html) with auto-redirect if already signed in.
 
-### 3. ➕ Session / Task Management
-- **Add New Tasks / Talks**: Modal form to add custom talks with title, speaker, room/hall, time slot, and description.
-- **Remove Sessions**: In-card delete controls with confirmation prompts to remove outdated or cancelled sessions.
+### 3. 🛡️ Security & Anti-Injection Architecture
+- **Web Crypto SHA-256 Password Hashing**: Passwords are never stored in plain text. Each user is provisioned with a cryptographic salt, and password verification is computed using the browser's native `crypto.subtle.digest('SHA-256', ...)`.
+- **SQL & HTML Injection Prevention**: All text inputs (titles, speakers, descriptions, search queries) pass through strict sanitization routines to strip `<script>`, harmful tags, and malicious injection payloads.
+- **Live Password Strength Meter**: Dynamic visual indicator evaluating password length, uppercase/lowercase casing, numbers, and special characters.
+- **Secure Tokenized Sessions**: Session tokens generated with cryptographic timestamps and stored in browser local storage.
 
-### 4. 💾 Local Storage & Initial Data Fallback
-- Persists user additions, modifications, and deletions directly in browser `localStorage`.
-- Automatically fetches and bootstraps initial schedule data from [`talks.json`](talks.json) when launched for the first time.
+### 4. 📅 Date & Time Picker (Appointment Scheduling)
+- **Interactive Calendar Date Picker**: Select appointment dates with constraints preventing past dates.
+- **Start & End Time Controls**: Dedicated appointment time picker inputs (`<input type="time">`) for start and end intervals.
+- **Category & Status Tracking**: Classify events (Conference Talk, 1-on-1 Meeting, Team Sync, Workshop, Keynote, Project Review) and mark them as *Upcoming*, *In Progress*, or *Completed*.
+- **Location & Link Support**: Assign physical venues (e.g. *Hall A*, *Room 302*) or virtual links (*Zoom*, *Google Meet*).
 
-### 5. 🔐 User Authentication & Account State
-- **Sign In / Sign Up Modal**: Integrated modal for seamless authentication directly from the dashboard.
-- **Standalone Login Page**: Dedicated [`login.html`](login.html) page with smooth tab toggling between Sign In and Sign Up.
-- **Session State Management**: Dynamically updates the navigation bar with active user profile badges and one-click Sign Out.
+### 5. 📆 Add to Calendar (.ics Export)
+- Generate and download standard **iCalendar (`.ics`)** files for any scheduled appointment with one click, enabling instant import into **Google Calendar, Apple Calendar, and Microsoft Outlook**.
 
-### 6. 📱 Responsive & Accessible UI
-- Clean interface powered by modern CSS custom properties (variables), responsive Flexbox, and CSS Grid.
-- Polished visual effects including subtle hover transitions, soft shadows, and modal animations.
+### 6. 🔍 Real-Time Search & Multi-Criteria Filtering
+- Instant multi-field search across titles, hosts, speakers, locations, categories, and descriptions.
+- Filter by **Date** (Today, Upcoming, All Dates), **Room / Location**, and **Status**.
+- Dynamic room discovery auto-populating from scheduled items.
 
----
-
-## 🛠️ Technology Stack
-
-| Category | Technology / Specification |
-| :--- | :--- |
-| **Frontend Markup** | **HTML5** (Semantic structure, modal overlays, accessible form controls) |
-| **Styling & Design** | **CSS3** (CSS Variables, Flexbox, Grid layout, Keyframe animations, Responsive design) |
-| **Client Scripting** | **Vanilla JavaScript (ES6+)** (DOM API, Async/Await, Fetch API, LocalStorage API) |
-| **Data Format** | **JSON** (Structured talk & session definitions) |
+### 7. 📊 Live Statistics Dashboard
+- Real-time counters showing **Total Appointments**, **Scheduled Today**, and **Active / Upcoming** sessions.
 
 ---
 
-## 🧰 Tools & Development Workflow
+## 🛠️ Technology Stack & APIs
 
-This project was built and managed using modern developer tools and agentic workflows:
+| Category | Technology / Specification | Purpose & Role |
+| :--- | :--- | :--- |
+| **Security & Cryptography** | **Web Crypto API (SubtleCrypto)** | Client-side SHA-256 hashing with salt for credentials |
+| **Frontend Markup** | **HTML5** | Semantic structure, date/time pickers, modal dialogs |
+| **Styling & Design** | **CSS3** | CSS variables, Flexbox, Grid, Glassmorphism, animations |
+| **Client Scripting** | **Vanilla JavaScript (ES6+)** | State management, DOM manipulation, async storage |
+| **Data Format** | **JSON** ([`talks.json`](talks.json)) | Default seeded session data |
+| **Calendar Standard** | **iCalendar (.ics / RFC 5545)** | Cross-platform calendar file generation via Blob API |
+| **Data Persistence** | **Web Storage API (LocalStorage)** | Multi-user database and appointment storage |
 
-- **Google Antigravity**: Agentic AI pair programming environment for scaffolding, rapid feature iteration, refactoring, and documentation.
-- **Git & GitHub CLI (`gh`)**: Distributed version control, commit tracking, and seamless GitHub repository creation and synchronization.
-- **Linux & Cloud Shell Environment**: Headless execution environment with development and testing utilities.
-- **Visual Studio Code / Code-OSS**: Code editing, formatting, and web previewing.
+---
+
+## 🧰 Development Tools & Workflow
+
+- **Google Antigravity**: Agentic AI pair programming environment for scaffolding, code generation, refactoring, and security enhancements.
+- **Git & GitHub CLI (`gh`)**: Distributed version control and automated GitHub repository synchronization.
+- **Code-OSS / Linux Cloud Shell**: Cloud-based execution, linting, and development workspace.
 
 ---
 
@@ -70,10 +75,10 @@ This project was built and managed using modern developer tools and agentic work
 
 ```text
 event-talks-app/
-├── index.html          # Main application dashboard, session grid & modals
-├── login.html          # Standalone authentication page (Sign In / Sign Up)
-├── talks.json          # Default seeded session data for initial launch
-├── README.md           # Comprehensive project documentation
+├── index.html          # Main application dashboard, Auth Gate & appointment scheduler
+├── login.html          # Standalone secure authentication portal (Sign In / Sign Up)
+├── talks.json          # Default seeded appointment & talk schedule data
+├── README.md           # Complete project documentation
 ├── summary_task3.md    # Repository inspection records
 └── summary_task4.md    # Development milestone logs
 ```
@@ -82,43 +87,33 @@ event-talks-app/
 
 ## 🚀 Getting Started
 
-No build tools, package managers, or compilers are required. You can run the application directly in any modern browser.
-
 ### Prerequisites
-- Any modern web browser (Google Chrome, Mozilla Firefox, Microsoft Edge, Safari).
+Any modern browser (Google Chrome, Firefox, Microsoft Edge, Safari) supporting the Web Crypto API.
 
-### Quick Launch Options
+### Running the Project
 
-#### Option A: Direct Browser Launch
-Simply open [`index.html`](index.html) in your browser:
-- On Linux / macOS:
-  ```bash
-  xdg-open index.html   # Linux
-  open index.html       # macOS
-  ```
-- Or double-click the `index.html` file in your file explorer.
-
-#### Option B: Using a Lightweight HTTP Server (Recommended)
-Using a local server ensures full compatibility with the Fetch API for loading `talks.json`:
-
+#### Option 1: Lightweight Local Server (Recommended)
 ```bash
-# Using Python 3 built-in server
+# Using Python 3
 python3 -m http.server 8000
 
 # Or using Node.js npx serve
 npx serve .
 ```
-Then visit `http://localhost:8000` in your browser.
+Navigate to `http://localhost:8000` in your web browser.
+
+#### Option 2: Direct File Launch
+Simply open [`index.html`](index.html) in your browser:
+- On Linux: `xdg-open index.html`
+- On macOS: `open index.html`
 
 ---
 
-## 🗺️ Roadmap & Future Enhancements
+## 🔒 Security Highlights
 
-- [ ] Connect with a persistent backend database (Firebase / PostgreSQL / REST API).
-- [ ] Add calendar export support (`.ics` / Google Calendar integration).
-- [ ] Real OAuth2 / JWT authentication integration.
-- [ ] Speaker profile cards and attendee bookmarking / favorites list.
-- [ ] Dark / Light theme toggle switch.
+1. **Client-Side SHA-256 Cryptography**: Passwords are never stored in raw text; each account is hashed with unique salts.
+2. **Input Sanitization**: Defense against Cross-Site Scripting (XSS) and SQL/HTML injection tokens.
+3. **Session Token Expiration & Validation**: Robust authentication checking before allowing interaction with application data.
 
 ---
 

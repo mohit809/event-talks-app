@@ -3,24 +3,39 @@
     "id": "talk-1",
     "title": "Introduction to AI Agents",
     "speaker": "Alice Johnson",
+    "date": "2026-09-01",
+    "startTime": "09:00",
+    "endTime": "10:00",
     "time": "09:00 - 10:00",
     "room": "Hall A",
+    "category": "Conference Talk",
+    "status": "Upcoming",
     "description": "An overview of autonomous AI agent architectures and workflows."
   },
   {
     "id": "talk-2",
     "title": "Scaling Cloud Infrastructure",
     "speaker": "Bob Smith",
+    "date": "2026-09-01",
+    "startTime": "10:15",
+    "endTime": "11:15",
     "time": "10:15 - 11:15",
     "room": "Hall B",
+    "category": "Workshop",
+    "status": "Upcoming",
     "description": "Best practices for deploying and scaling modern cloud services."
   },
   {
     "id": "talk-3",
     "title": "Model Context Protocol in Practice",
     "speaker": "Carol White",
+    "date": "2026-09-02",
+    "startTime": "11:30",
+    "endTime": "12:30",
     "time": "11:30 - 12:30",
     "room": "Hall A",
+    "category": "Keynote",
+    "status": "Upcoming",
     "description": "Integrating LLMs with tools and data using the Model Context Protocol."
   }
 ]

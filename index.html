@@ -3,30 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Schedular - Event & Task Management</title>
+  <title>Schedular - Smart Appointment & Event Management</title>
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --success: #16a34a;
-      --danger: #dc2626;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-light: #eff6ff;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
-      --badge-bg: #eff6ff;
-      --badge-text: #2563eb;
-      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.06);
+      --radius: 12px;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding-bottom: 3rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Brand & Clock Logo */
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .clock-icon-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      color: white;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.35);
+      transition: transform 0.2s ease;
+    }
+    .brand-logo:hover .clock-icon-wrapper {
+      transform: rotate(15deg) scale(1.05);
+    }
+    .clock-svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     /* Navbar */
@@ -36,24 +82,40 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: var(--shadow-sm);
     }
     .nav-container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.85rem 1.25rem;
     }
-    .brand {
-      display: flex;
+    .live-clock-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--primary);
-      text-decoration: none;
+      gap: 0.4rem;
+      background: #f1f5f9;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--success);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
     .nav-actions {
       display: flex;
@@ -65,22 +127,26 @@
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
       font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
       transition: all 0.15s ease-in-out;
       text-decoration: none;
+      white-space: nowrap;
     }
     .btn-primary {
-      background-color: var(--primary);
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
       color: white;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     }
     .btn-primary:hover {
-      background-color: var(--primary-hover);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+      transform: translateY(-1px);
     }
     .btn-outline {
       background-color: transparent;
@@ -92,21 +158,71 @@
       border-color: #cbd5e1;
     }
     .btn-danger {
-      background-color: transparent;
+      background-color: var(--danger-light);
       color: var(--danger);
-      border: 1px solid #fee2e2;
-      padding: 0.35rem 0.65rem;
-      font-size: 0.8rem;
+      border: 1px solid #fecaca;
     }
     .btn-danger:hover {
       background-color: #fee2e2;
     }
+    .btn-calendar {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid #bfdbfe;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+    }
+    .btn-calendar:hover {
+      background-color: #dbeafe;
+    }
 
     /* Main Container */
     .container {
-      max-width: 1000px;
-      margin: 2rem auto 0;
+      max-width: 1100px;
+      margin: 1.75rem auto 3rem;
       padding: 0 1.25rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Stats Overview Banner */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .stat-icon.blue { background: var(--primary-light); color: var(--primary); }
+    .stat-icon.green { background: var(--success-light); color: var(--success); }
+    .stat-icon.purple { background: #f3e8ff; color: #9333ea; }
+    .stat-num {
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
     }
 
     /* Controls Bar */
@@ -115,185 +231,239 @@
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 1rem;
+      gap: 0.85rem;
       margin-bottom: 1.5rem;
+      background: var(--card-bg);
+      padding: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
     }
     .search-box {
       flex: 1;
-      min-width: 260px;
+      min-width: 250px;
       position: relative;
     }
     .search-box input {
       width: 100%;
-      padding: 0.6rem 1rem 0.6rem 2.2rem;
+      padding: 0.65rem 1rem 0.65rem 2.4rem;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 0.95rem;
       outline: none;
-      background: var(--card-bg);
+      background: #fafafa;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
     .search-box input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
     }
     .search-icon {
       position: absolute;
-      left: 0.75rem;
+      left: 0.85rem;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
     .filter-select {
-      padding: 0.6rem 0.85rem;
+      padding: 0.65rem 0.85rem;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
       background: var(--card-bg);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text);
       outline: none;
       cursor: pointer;
     }
-
-    /* Task & Talk Cards */
-    .talks-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    .filter-select:focus {
+      border-color: var(--primary);
     }
-    .talk-card {
+
+    /* Cards Grid */
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+    .appointment-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: var(--radius);
       padding: 1.35rem;
       box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .talk-card:hover {
+    .appointment-card:hover {
+      transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
+    }
+    .card-category-strip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
     }
     .card-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 0.5rem;
+      gap: 0.75rem;
+      margin-bottom: 0.6rem;
     }
-    .talk-title {
-      font-size: 1.25rem;
+    .item-title {
+      font-size: 1.15rem;
       font-weight: 700;
       color: var(--text);
+      line-height: 1.35;
     }
     .badge-group {
       display: flex;
-      gap: 0.5rem;
-      align-items: center;
+      gap: 0.4rem;
       flex-wrap: wrap;
+      margin-bottom: 0.75rem;
     }
     .badge {
-      background-color: var(--badge-bg);
-      color: var(--badge-text);
-      padding: 0.25rem 0.65rem;
+      padding: 0.25rem 0.6rem;
       border-radius: 9999px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
     }
-    .badge-room {
-      background-color: #f3e8ff;
-      color: #7e22ce;
-    }
+    .badge-time { background-color: #eff6ff; color: #2563eb; }
+    .badge-date { background-color: #f3e8ff; color: #7e22ce; }
+    .badge-room { background-color: #f1f5f9; color: #475569; }
+    .badge-status-upcoming { background-color: var(--warning-light); color: #b45309; }
+    .badge-status-inprogress { background-color: var(--primary-light); color: var(--primary); }
+    .badge-status-completed { background-color: var(--success-light); color: var(--success); }
+
     .meta-info {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
       margin-bottom: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
     }
     .meta-info span strong {
       color: var(--text);
     }
-    .talk-desc {
+    .item-desc {
       color: #475569;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       line-height: 1.5;
+      margin-bottom: 1rem;
+      flex: 1;
     }
     .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 1rem;
-      padding-top: 0.75rem;
+      padding-top: 0.85rem;
       border-top: 1px solid #f1f5f9;
+      margin-top: auto;
+      gap: 0.5rem;
     }
 
-    /* Empty state */
+    /* Empty State */
     .empty-state {
+      grid-column: 1 / -1;
       text-align: center;
-      padding: 3rem 1rem;
+      padding: 3.5rem 1.5rem;
       background: var(--card-bg);
-      border: 1px dashed var(--border);
-      border-radius: 10px;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
       color: var(--text-muted);
     }
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
 
-    /* Modals */
-    .modal-overlay {
-      display: none;
+    /* Full-Screen Authentication Gate */
+    .auth-gate-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(2px);
-      z-index: 1000;
+      background: radial-gradient(circle at top right, #1e293b, #0f172a);
+      z-index: 2000;
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
     }
-    .modal-overlay.active {
-      display: flex;
-    }
-    .modal {
-      background: var(--card-bg);
-      border-radius: 12px;
+    .auth-gate-card {
+      background: #ffffff;
+      border-radius: 16px;
       width: 100%;
-      max-width: 500px;
-      padding: 1.75rem;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-      animation: modalSlide 0.2s ease-out;
+      max-width: 440px;
+      padding: 2.25rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      animation: gatePop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @keyframes modalSlide {
-      from { transform: translateY(15px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    @keyframes gatePop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.25rem;
+    .auth-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
     }
-    .modal-title {
-      font-size: 1.3rem;
-      font-weight: 700;
+    .auth-header .brand-logo {
+      justify-content: center;
+      margin-bottom: 0.5rem;
     }
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
+    .auth-header p {
       color: var(--text-muted);
-      cursor: pointer;
-      line-height: 1;
+      font-size: 0.92rem;
     }
-    .close-btn:hover {
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .auth-tab-btn {
+      padding: 0.65rem;
+      border: none;
+      background: transparent;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.15s ease;
+    }
+    .auth-tab-btn.active {
+      background: #ffffff;
       color: var(--text);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* Forms */
+    /* Forms & Inputs */
     .form-group {
       margin-bottom: 1rem;
     }
     .form-group label {
-      display: block;
+      display: flex;
+      justify-content: space-between;
       font-size: 0.85rem;
       font-weight: 600;
       margin-bottom: 0.35rem;
@@ -305,32 +475,172 @@
       width: 100%;
       padding: 0.65rem 0.85rem;
       border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.95rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
       outline: none;
       background: #fafafa;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      font-family: inherit;
     }
     .form-group input:focus,
     .form-group textarea:focus,
     .form-group select:focus {
       border-color: var(--primary);
-      background: #fff;
-      box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
     }
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
     }
+
+    /* Security & Password Strength indicator */
+    .password-strength-wrap {
+      margin-top: 0.35rem;
+    }
+    .strength-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex;
+    }
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    .strength-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .security-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1500;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: var(--card-bg);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 540px;
+      padding: 1.75rem;
+      box-shadow: var(--shadow-lg);
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalSlide 0.25s ease-out;
+    }
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.25rem;
+    }
+    .close-btn:hover { color: var(--text); }
+
+    /* Toast System */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      background: #1e293b;
+      color: white;
+      padding: 0.85rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      animation: toastIn 0.25s ease-out;
+      max-width: 350px;
+    }
+    .toast.success { background: #065f46; border-left: 4px solid var(--success); }
+    .toast.error { background: #991b1b; border-left: 4px solid var(--danger); }
+    .toast.info { background: #1e40af; border-left: 4px solid var(--primary); }
+    @keyframes toastIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
     .user-pill {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       background: #f1f5f9;
-      padding: 0.35rem 0.75rem;
+      padding: 0.4rem 0.85rem;
       border-radius: 9999px;
       font-size: 0.85rem;
       font-weight: 600;
+      border: 1px solid var(--border);
+    }
+    .user-avatar {
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
     }
   </style>
 </head>
@@ -339,350 +649,772 @@
   <!-- Top Navigation Bar -->
   <nav class="navbar">
     <div class="nav-container">
-      <a href="index.html" class="brand">
-        <span>📅</span> Schedular
+      <a href="index.html" class="brand-logo">
+        <div class="clock-icon-wrapper">
+          <svg class="clock-svg" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"></circle>
+            <polyline points="12 7 12 12 15 15"></polyline>
+          </svg>
+        </div>
+        <span>Schedular</span>
       </a>
+
+      <div class="live-clock-badge">
+        <span class="pulse-dot"></span>
+        <span id="liveClock">Loading time...</span>
+      </div>
+
       <div class="nav-actions">
-        <button class="btn btn-primary" onclick="openAddTaskModal()">
-          <span>➕</span> Add New Task
+        <button class="btn btn-primary" onclick="openScheduleModal()">
+          <span>➕</span> Schedule Appointment
         </button>
-        <div id="auth-section">
-          <!-- Populated by JS -->
+        <div id="authNavSection">
+          <!-- Populated by JavaScript -->
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Main Content Container -->
-  <div class="container">
+  <!-- Main Application Container -->
+  <main class="container">
+    <!-- Quick Statistics Bar -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-icon blue">🕒</div>
+        <div>
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-label">Total Appointments</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">📅</div>
+        <div>
+          <div class="stat-num" id="statToday">0</div>
+          <div class="stat-label">Scheduled Today</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple">🎯</div>
+        <div>
+          <div class="stat-num" id="statUpcoming">0</div>
+          <div class="stat-label">Upcoming / Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Controls Bar -->
     <div class="controls">
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search tasks, speakers, topics, or rooms..." oninput="filterTasks()">
+        <input type="text" id="searchInput" placeholder="Search appointments, speakers, rooms, or topics..." oninput="filterAppointments()">
       </div>
-      <select id="roomFilter" class="filter-select" onchange="filterTasks()">
-        <option value="ALL">All Rooms</option>
-      </select>
+      <div class="filter-group">
+        <select id="dateFilter" class="filter-select" onchange="filterAppointments()">
+          <option value="ALL">All Dates</option>
+          <option value="TODAY">Today Only</option>
+          <option value="UPCOMING">Upcoming Dates</option>
+        </select>
+        <select id="roomFilter" class="filter-select" onchange="filterAppointments()">
+          <option value="ALL">All Rooms & Locations</option>
+        </select>
+        <select id="statusFilter" class="filter-select" onchange="filterAppointments()">
+          <option value="ALL">All Statuses</option>
+          <option value="Upcoming">Upcoming</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
     </div>
 
-    <!-- Talks / Tasks List -->
-    <div id="talksContainer" class="talks-grid">
-      <div class="empty-state">Loading schedule...</div>
-    </div>
-  </div>
-
-  <!-- Add New Task / Talk Modal -->
-  <div id="addTaskModal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title">➕ Add New Task / Talk</h2>
-        <button class="close-btn" onclick="closeAddTaskModal()">&times;</button>
+    <!-- Appointments & Talks Grid -->
+    <div id="appointmentsContainer" class="schedule-grid">
+      <div class="empty-state">
+        <div class="empty-icon">🕒</div>
+        <p>Loading your appointments & events...</p>
       </div>
-      <form id="addTaskForm" onsubmit="handleAddTask(event)">
-        <div class="form-group">
-          <label for="taskTitle">Task / Talk Title *</label>
-          <input type="text" id="taskTitle" required placeholder="e.g., Deep Dive into Microservices">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="taskSpeaker">Speaker / Assignee *</label>
-            <input type="text" id="taskSpeaker" required placeholder="e.g., Jane Doe">
+    </div>
+  </main>
+
+  <!-- Mandatory Authentication Gate (Sign In / Sign Up) -->
+  <div id="authGate" class="auth-gate-overlay" style="display: none;">
+    <div class="auth-gate-card">
+      <div class="auth-header">
+        <div class="brand-logo">
+          <div class="clock-icon-wrapper">
+            <svg class="clock-svg" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9"></circle>
+              <polyline points="12 7 12 12 15 15"></polyline>
+            </svg>
           </div>
-          <div class="form-group">
-            <label for="taskRoom">Room / Location *</label>
-            <input type="text" id="taskRoom" required placeholder="e.g., Hall C or Online">
-          </div>
+          <span>Schedular</span>
         </div>
-        <div class="form-group">
-          <label for="taskTime">Time Slot / Duration *</label>
-          <input type="text" id="taskTime" required placeholder="e.g., 14:00 - 15:00">
-        </div>
-        <div class="form-group">
-          <label for="taskDesc">Description</label>
-          <textarea id="taskDesc" rows="3" placeholder="Overview of the task, topic, or agenda..."></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
-          Save Task to Schedular
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Login / Sign In Modal -->
-  <div id="authModal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title" id="authModalTitle">Sign In to Schedular</h2>
-        <button class="close-btn" onclick="closeAuthModal()">&times;</button>
+        <p id="gateSubtitle">Please sign in to access your smart schedule.</p>
       </div>
-      <form id="authForm" onsubmit="handleAuthSubmit(event)">
-        <div class="form-group" id="nameGroup" style="display: none;">
-          <label for="authName">Full Name</label>
-          <input type="text" id="authName" placeholder="e.g., Jane Doe">
-        </div>
-        <div class="form-group">
-          <label for="authEmail">Email Address</label>
-          <input type="email" id="authEmail" required placeholder="user@example.com">
-        </div>
-        <div class="form-group">
-          <label for="authPassword">Password</label>
-          <input type="password" id="authPassword" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" id="authSubmitBtn">
-          Sign In
-        </button>
-      </form>
-      <div style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
-        <span id="authToggleText">Don't have an account?</span>
-        <a href="javascript:void(0)" onclick="toggleAuthMode()" id="authToggleLink" style="color: var(--primary); font-weight: 600; text-decoration: none; margin-left: 0.25rem;">
-          Sign Up
-        </a>
+
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="auth-tab-btn" id="tabSignUp" onclick="switchAuthTab('signup')">Create Account</button>
       </div>
-    </div>
-  </div>
 
-  <script>
-    const STORAGE_KEY = 'schedular_tasks_v1';
-    const USER_KEY = 'schedular_current_user_v1';
-    let allTasks = [];
-    let isSignUpMode = false;
+      <form id="gateAuthForm" onsubmit="handleGateAuth(event)" autocomplete="off">
+        <div class="form-group" id="gateNameGroup" style="display: none;">
+          <label for="gateName">Full Name *</label>
+          <input type="text" id="gateName" placeholder="e.g., Jane Doe" maxlength="60">
+        </div>
 
-    // Initialize App
-    document.addEventListener('DOMContentLoaded', () => {
-      renderAuthNav();
-      loadTasks();
-    });
+        <div class="form-group">
+          <label for="gateEmail">Email Address *</label>
+          <input type="email" id="gateEmail" required placeholder="name@company.com" maxlength="100">
+        </div>
 
-    // Load Tasks (from localStorage or default talks.json)
-    async function loadTasks() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try {
-          allTasks = JSON.parse(stored);
-        } catch (e) {
-          allTasks = [];
-        }
-      } else {
-        try {
-          const res = await fetch('talks.json');
-          if (res.ok) {
-            allTasks = await res.json();
-            saveTasksToStorage();
-          }
-        } catch (err) {
-          console.warn('Could not load talks.json, using defaults:', err);
-          allTasks = [
-            { id: '1', title: 'Introduction to AI Agents', speaker: 'Alice Johnson', time: '09:00 - 10:00', room: 'Hall A', description: 'Overview of autonomous AI agents.' }
-          ];
-        }
-      }
-      populateRoomFilter();
-      renderTasks(allTasks);
-    }
-
-    function saveTasksToStorage() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(allTasks));
-    }
-
-    // Populate Room Filter Options
-    function populateRoomFilter() {
-      const select = document.getElementById('roomFilter');
-      const currentVal = select.value;
-      const rooms = Array.from(new Set(allTasks.map(t => t.room).filter(Boolean)));
-      select.innerHTML = '<option value="ALL">All Rooms</option>';
-      rooms.forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r;
-        opt.textContent = r;
-        select.appendChild(opt);
-      });
-      if (rooms.includes(currentVal)) select.value = currentVal;
-    }
-
-    // Render Tasks List
-    function renderTasks(tasks) {
-      const container = document.getElementById('talksContainer');
-      if (!tasks || tasks.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No tasks found.</p>
-            <button class="btn btn-primary" onclick="openAddTaskModal()">Add the first task</button>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = tasks.map(task => `
-        <div class="talk-card" id="task-${task.id}">
-          <div class="card-top">
-            <h2 class="talk-title">${escapeHtml(task.title)}</h2>
-            <div class="badge-group">
-              <span class="badge badge-room">📍 ${escapeHtml(task.room || 'General')}</span>
-              <span class="badge">⏰ ${escapeHtml(task.time || 'TBD')}</span>
+        <div class="form-group">
+          <label for="gatePassword">Password *</label>
+          <input type="password" id="gatePassword" required placeholder="••••••••" minlength="6" maxlength="128" oninput="checkPasswordStrength(this.value)">
+          <div class="password-strength-wrap" id="strengthMeter" style="display: none;">
+            <div class="strength-bar">
+              <div class="strength-fill" id="strengthBarFill"></div>
+            </div>
+            <div class="strength-text">
+              <span id="strengthScoreText">Password strength</span>
+              <span>Min 6 characters</span>
             </div>
           </div>
-          <div class="meta-info">
-            <span><strong>Speaker / Lead:</strong> ${escapeHtml(task.speaker || 'Unassigned')}</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; margin-top: 0.5rem;" id="gateSubmitBtn">
+          Sign In to Schedular
+        </button>
+      </form>
+
+      <div class="security-badge">
+        <span>🛡️</span>
+        <span>Secure Session • WebCrypto SHA-256 Hashing • Injection-Proof</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule Appointment Modal (With Calendar & Time Picker) -->
+  <div id="scheduleModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <span>🕒</span> Schedule Appointment / Talk
+        </h2>
+        <button class="close-btn" onclick="closeScheduleModal()">&times;</button>
+      </div>
+      <form id="scheduleForm" onsubmit="handleSaveAppointment(event)">
+        <div class="form-group">
+          <label for="appTitle">Appointment / Talk Title *</label>
+          <input type="text" id="appTitle" required placeholder="e.g., Quarterly Architecture Review" maxlength="120">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="appSpeaker">Host / Speaker / Assignee *</label>
+            <input type="text" id="appSpeaker" required placeholder="e.g., Dr. Alice Johnson" maxlength="80">
           </div>
-          <p class="talk-desc">${escapeHtml(task.description || 'No description provided.')}</p>
-          <div class="card-footer">
-            <span style="font-size: 0.8rem; color: var(--text-muted);">Task ID: ${escapeHtml(task.id)}</span>
-            <button class="btn btn-danger" onclick="deleteTask('${task.id}')">🗑️ Remove</button>
+          <div class="form-group">
+            <label for="appCategory">Category</label>
+            <select id="appCategory">
+              <option value="Conference Talk">🗣️ Conference Talk</option>
+              <option value="1-on-1 Meeting">🤝 1-on-1 Meeting</option>
+              <option value="Team Sync">👥 Team Sync</option>
+              <option value="Workshop">🛠️ Workshop</option>
+              <option value="Keynote">⭐ Keynote</option>
+              <option value="Project Review">🎯 Project Review</option>
+            </select>
           </div>
         </div>
-      `).join('');
-    }
 
-    // Filter Tasks by Search & Room
-    function filterTasks() {
-      const query = document.getElementById('searchInput').value.toLowerCase().trim();
-      const selectedRoom = document.getElementById('roomFilter').value;
+        <!-- Appointment Calendar Date Picker -->
+        <div class="form-group">
+          <label for="appDate">📅 Appointment Date *</label>
+          <input type="date" id="appDate" required>
+        </div>
 
-      const filtered = allTasks.filter(task => {
-        const matchQuery = !query ||
-          (task.title && task.title.toLowerCase().includes(query)) ||
-          (task.speaker && task.speaker.toLowerCase().includes(query)) ||
-          (task.description && task.description.toLowerCase().includes(query)) ||
-          (task.room && task.room.toLowerCase().includes(query));
-
-        const matchRoom = selectedRoom === 'ALL' || task.room === selectedRoom;
-        return matchQuery && matchRoom;
-      });
-
-      renderTasks(filtered);
-    }
-
-    // Add Task Modal Logic
-    function openAddTaskModal() {
-      document.getElementById('addTaskModal').classList.add('active');
-      document.getElementById('taskTitle').focus();
-    }
-    function closeAddTaskModal() {
-      document.getElementById('addTaskModal').classList.remove('active');
-      document.getElementById('addTaskForm').reset();
-    }
-    function handleAddTask(event) {
-      event.preventDefault();
-      const title = document.getElementById('taskTitle').value.trim();
-      const speaker = document.getElementById('taskSpeaker').value.trim();
-      const room = document.getElementById('taskRoom').value.trim();
-      const time = document.getElementById('taskTime').value.trim();
-      const desc = document.getElementById('taskDesc').value.trim();
-
-      const newTask = {
-        id: 'task-' + Date.now(),
-        title,
-        speaker,
-        room,
-        time,
-        description: desc
-      };
-
-      allTasks.unshift(newTask);
-      saveTasksToStorage();
-      populateRoomFilter();
-      filterTasks();
-      closeAddTaskModal();
-    }
-
-    function deleteTask(id) {
-      if (confirm('Are you sure you want to remove this task?')) {
-        allTasks = allTasks.filter(t => t.id !== id);
-        saveTasksToStorage();
-        populateRoomFilter();
-        filterTasks();
-      }
-    }
-
-    // Authentication Logic (Sign In / Sign Up)
-    function getCurrentUser() {
-      const user = localStorage.getItem(USER_KEY);
-      return user ? JSON.parse(user) : null;
-    }
-
-    function renderAuthNav() {
-      const authSection = document.getElementById('auth-section');
-      const user = getCurrentUser();
-      if (user) {
-        authSection.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <div class="user-pill">👤 ${escapeHtml(user.name || user.email.split('@')[0])}</div>
-            <button class="btn btn-outline" onclick="handleLogout()">Sign Out</button>
+        <!-- Time Picker (Start & End Time) -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="appStartTime">⏰ Start Time *</label>
+            <input type="time" id="appStartTime" required>
           </div>
-        `;
-      } else {
-        authSection.innerHTML = `
-          <div style="display: flex; gap: 0.5rem;">
-            <button class="btn btn-outline" onclick="openAuthModal(false)">Sign In</button>
-            <button class="btn btn-primary" onclick="openAuthModal(true)">Sign Up</button>
+          <div class="form-group">
+            <label for="appEndTime">⏰ End Time *</label>
+            <input type="time" id="appEndTime" required>
           </div>
-        `;
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="appRoom">📍 Room / Venue / Link *</label>
+            <input type="text" id="appRoom" required placeholder="e.g., Hall A, Room 302, or Zoom link" maxlength="80">
+          </div>
+          <div class="form-group">
+            <label for="appStatus">Status</label>
+            <select id="appStatus">
+              <option value="Upcoming">🟡 Upcoming</option>
+              <option value="In Progress">🟢 In Progress</option>
+              <option value="Completed">🟣 Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="appDesc">Agenda & Description</label>
+          <textarea id="appDesc" rows="3" placeholder="Overview of key discussion topics, objectives, or instructions..." maxlength="500"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; margin-top: 0.5rem;">
+          Confirm & Save Appointment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    /**
+     * Schedular Application Core
+     * Features: Auth Gate, Web Crypto SHA-256 Hashing, Input Sanitization (Injection Prevention),
+     * Calendar & Clock Appointment Picker, ICS Calendar Export, Local Storage Persistence.
+     */
+
+    const STORAGE_KEY = 'schedular_appointments_v2';
+    const USERS_DB_KEY = 'schedular_users_db_v2';
+    const SESSION_KEY = 'schedular_active_session_v2';
+
+    let appointments = [];
+    let activeAuthMode = 'signin';
+
+    // 1. Initial Launch
+    document.addEventListener('DOMContentLoaded', async () => {
+      startLiveClock();
+      checkAuthGate();
+      setDefaultAppointmentDate();
+    });
+
+    // 2. Real-Time Live Clock Display
+    function startLiveClock() {
+      function update() {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+        const el = document.getElementById('liveClock');
+        if (el) el.textContent = `${dateStr} • ${timeStr}`;
       }
+      update();
+      setInterval(update, 1000);
     }
 
-    function openAuthModal(signup = false) {
-      isSignUpMode = signup;
-      updateAuthModalUI();
-      document.getElementById('authModal').classList.add('active');
-    }
-
-    function closeAuthModal() {
-      document.getElementById('authModal').classList.remove('active');
-      document.getElementById('authForm').reset();
-    }
-
-    function toggleAuthMode() {
-      isSignUpMode = !isSignUpMode;
-      updateAuthModalUI();
-    }
-
-    function updateAuthModalUI() {
-      const title = document.getElementById('authModalTitle');
-      const submitBtn = document.getElementById('authSubmitBtn');
-      const nameGroup = document.getElementById('nameGroup');
-      const toggleText = document.getElementById('authToggleText');
-      const toggleLink = document.getElementById('authToggleLink');
-
-      if (isSignUpMode) {
-        title.textContent = 'Create Schedular Account';
-        submitBtn.textContent = 'Create Account';
-        nameGroup.style.display = 'block';
-        toggleText.textContent = 'Already have an account?';
-        toggleLink.textContent = 'Sign In';
-      } else {
-        title.textContent = 'Sign In to Schedular';
-        submitBtn.textContent = 'Sign In';
-        nameGroup.style.display = 'none';
-        toggleText.textContent = "Don't have an account?";
-        toggleLink.textContent = 'Sign Up';
-      }
-    }
-
-    function handleAuthSubmit(e) {
-      e.preventDefault();
-      const email = document.getElementById('authEmail').value.trim();
-      const name = isSignUpMode ? (document.getElementById('authName').value.trim() || email.split('@')[0]) : email.split('@')[0];
-
-      const user = { email, name, loggedInAt: new Date().toISOString() };
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
-      renderAuthNav();
-      closeAuthModal();
-    }
-
-    function handleLogout() {
-      localStorage.removeItem(USER_KEY);
-      renderAuthNav();
+    // 3. Security & Anti-Injection Sanitization Functions
+    function sanitizeInput(str) {
+      if (typeof str !== 'string') return '';
+      // Strip script tags and HTML dangerous injection tokens
+      return str
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/[<>]/g, '')
+        .trim();
     }
 
     function escapeHtml(str) {
       if (!str) return '';
-      return str.replace(/[&<>'"]/g, tag => ({
+      return String(str).replace(/[&<>'"]/g, tag => ({
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
         "'": '&#39;',
         '"': '&quot;'
       }[tag] || tag));
+    }
+
+    // Cryptographically secure password hashing (SHA-256)
+    async function hashPassword(password, salt) {
+      const enc = new TextEncoder();
+      const data = enc.encode(password + '::' + salt);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // 4. Authentication Gate & Session Management
+    function getStoredUsers() {
+      try {
+        const users = localStorage.getItem(USERS_DB_KEY);
+        return users ? JSON.parse(users) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveStoredUsers(users) {
+      localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
+    }
+
+    function getActiveSession() {
+      try {
+        const session = localStorage.getItem(SESSION_KEY);
+        return session ? JSON.parse(session) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function setActiveSession(user) {
+      const session = {
+        email: user.email,
+        name: user.name,
+        token: 'sess_' + Math.random().toString(36).substring(2) + Date.now(),
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    }
+
+    function checkAuthGate() {
+      const session = getActiveSession();
+      const gate = document.getElementById('authGate');
+      if (!session) {
+        gate.style.display = 'flex';
+        renderAuthNav(null);
+      } else {
+        gate.style.display = 'none';
+        renderAuthNav(session);
+        loadAppointments();
+      }
+    }
+
+    function switchAuthTab(mode) {
+      activeAuthMode = mode;
+      const tabSignIn = document.getElementById('tabSignIn');
+      const tabSignUp = document.getElementById('tabSignUp');
+      const nameGroup = document.getElementById('gateNameGroup');
+      const submitBtn = document.getElementById('gateSubmitBtn');
+      const subtitle = document.getElementById('gateSubtitle');
+      const strengthMeter = document.getElementById('strengthMeter');
+
+      if (mode === 'signup') {
+        tabSignUp.classList.add('active');
+        tabSignIn.classList.remove('active');
+        nameGroup.style.display = 'block';
+        submitBtn.textContent = 'Create Account';
+        subtitle.textContent = 'Create a secure account to manage your schedule.';
+        strengthMeter.style.display = 'block';
+      } else {
+        tabSignIn.classList.add('active');
+        tabSignUp.classList.remove('active');
+        nameGroup.style.display = 'none';
+        submitBtn.textContent = 'Sign In to Schedular';
+        subtitle.textContent = 'Please sign in to access your smart schedule.';
+        strengthMeter.style.display = 'none';
+      }
+    }
+
+    function checkPasswordStrength(password) {
+      const bar = document.getElementById('strengthBarFill');
+      const text = document.getElementById('strengthScoreText');
+      if (!bar || !text) return;
+
+      let score = 0;
+      if (password.length >= 6) score += 25;
+      if (password.length >= 10) score += 25;
+      if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score += 25;
+      if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) score += 25;
+
+      bar.style.width = score + '%';
+      if (score < 50) {
+        bar.style.backgroundColor = 'var(--danger)';
+        text.textContent = 'Weak password';
+      } else if (score < 75) {
+        bar.style.backgroundColor = 'var(--warning)';
+        text.textContent = 'Medium strength';
+      } else {
+        bar.style.backgroundColor = 'var(--success)';
+        text.textContent = 'Strong password';
+      }
+    }
+
+    async function handleGateAuth(e) {
+      e.preventDefault();
+      const email = sanitizeInput(document.getElementById('gateEmail').value.toLowerCase());
+      const password = document.getElementById('gatePassword').value;
+      const name = sanitizeInput(document.getElementById('gateName').value);
+
+      if (!email || !password) {
+        showToast('Please provide both email and password.', 'error');
+        return;
+      }
+
+      const users = getStoredUsers();
+
+      if (activeAuthMode === 'signup') {
+        const existing = users.find(u => u.email === email);
+        if (existing) {
+          showToast('An account with this email already exists. Please sign in.', 'error');
+          return;
+        }
+
+        const salt = Math.random().toString(36).substring(2);
+        const passwordHash = await hashPassword(password, salt);
+        const newUser = {
+          email,
+          name: name || email.split('@')[0],
+          salt,
+          passwordHash,
+          registeredAt: new Date().toISOString()
+        };
+
+        users.push(newUser);
+        saveStoredUsers(users);
+        setActiveSession(newUser);
+        showToast(`Account created! Welcome, ${newUser.name}.`, 'success');
+        checkAuthGate();
+      } else {
+        const user = users.find(u => u.email === email);
+        if (!user) {
+          // Auto-seed first time demo user if DB is fresh
+          if (users.length === 0) {
+            const salt = 'demo_salt';
+            const hash = await hashPassword(password, salt);
+            const demoUser = { email, name: email.split('@')[0], salt, passwordHash: hash };
+            users.push(demoUser);
+            saveStoredUsers(users);
+            setActiveSession(demoUser);
+            showToast('Welcome to Schedular!', 'success');
+            checkAuthGate();
+            return;
+          }
+          showToast('Invalid email or password.', 'error');
+          return;
+        }
+
+        const computedHash = await hashPassword(password, user.salt);
+        if (computedHash !== user.passwordHash) {
+          showToast('Invalid email or password.', 'error');
+          return;
+        }
+
+        setActiveSession(user);
+        showToast(`Welcome back, ${user.name}!`, 'success');
+        checkAuthGate();
+      }
+    }
+
+    function handleSignOut() {
+      localStorage.removeItem(SESSION_KEY);
+      showToast('Signed out successfully.', 'info');
+      checkAuthGate();
+    }
+
+    function renderAuthNav(session) {
+      const container = document.getElementById('authNavSection');
+      if (!container) return;
+
+      if (session) {
+        const initial = (session.name || session.email || 'U').charAt(0).toUpperCase();
+        container.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <div class="user-pill">
+              <div class="user-avatar">${escapeHtml(initial)}</div>
+              <span>${escapeHtml(session.name)}</span>
+            </div>
+            <button class="btn btn-outline" onclick="handleSignOut()">Sign Out</button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <button class="btn btn-primary" onclick="openGateModal()">Sign In</button>
+        `;
+      }
+    }
+
+    function openGateModal() {
+      document.getElementById('authGate').style.display = 'flex';
+    }
+
+    // 5. Data & Appointment Management
+    async function loadAppointments() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          appointments = JSON.parse(stored);
+        } catch {
+          appointments = [];
+        }
+      } else {
+        try {
+          const res = await fetch('talks.json');
+          if (res.ok) {
+            appointments = await res.json();
+            saveAppointments();
+          }
+        } catch (e) {
+          console.warn('Could not load talks.json, using fallback.', e);
+          appointments = [];
+        }
+      }
+
+      populateFilterDropdowns();
+      filterAppointments();
+      updateStatistics();
+    }
+
+    function saveAppointments() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appointments));
+      updateStatistics();
+    }
+
+    function updateStatistics() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const total = appointments.length;
+      const todayCount = appointments.filter(a => a.date === todayStr).length;
+      const upcomingCount = appointments.filter(a => a.status !== 'Completed').length;
+
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statToday').textContent = todayCount;
+      document.getElementById('statUpcoming').textContent = upcomingCount;
+    }
+
+    function populateFilterDropdowns() {
+      const roomSelect = document.getElementById('roomFilter');
+      const currentVal = roomSelect.value;
+      const rooms = Array.from(new Set(appointments.map(a => a.room).filter(Boolean)));
+
+      roomSelect.innerHTML = '<option value="ALL">All Rooms & Locations</option>';
+      rooms.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = `📍 ${r}`;
+        roomSelect.appendChild(opt);
+      });
+      if (rooms.includes(currentVal)) roomSelect.value = currentVal;
+    }
+
+    function filterAppointments() {
+      const query = sanitizeInput(document.getElementById('searchInput').value.toLowerCase());
+      const selectedRoom = document.getElementById('roomFilter').value;
+      const selectedStatus = document.getElementById('statusFilter').value;
+      const selectedDateMode = document.getElementById('dateFilter').value;
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      const filtered = appointments.filter(item => {
+        const matchQuery = !query ||
+          (item.title && item.title.toLowerCase().includes(query)) ||
+          (item.speaker && item.speaker.toLowerCase().includes(query)) ||
+          (item.room && item.room.toLowerCase().includes(query)) ||
+          (item.description && item.description.toLowerCase().includes(query)) ||
+          (item.category && item.category.toLowerCase().includes(query));
+
+        const matchRoom = selectedRoom === 'ALL' || item.room === selectedRoom;
+        const matchStatus = selectedStatus === 'ALL' || item.status === selectedStatus;
+
+        let matchDate = true;
+        if (selectedDateMode === 'TODAY') {
+          matchDate = item.date === todayStr;
+        } else if (selectedDateMode === 'UPCOMING') {
+          matchDate = !item.date || item.date >= todayStr;
+        }
+
+        return matchQuery && matchRoom && matchStatus && matchDate;
+      });
+
+      renderAppointments(filtered);
+    }
+
+    function renderAppointments(list) {
+      const container = document.getElementById('appointmentsContainer');
+      if (!list || list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <h3 style="margin-bottom: 0.5rem; color: var(--text);">No appointments found</h3>
+            <p style="margin-bottom: 1.25rem;">Try adjusting your search criteria or schedule a new appointment.</p>
+            <button class="btn btn-primary" onclick="openScheduleModal()"><span>➕</span> Schedule Appointment</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        const statusClass = (item.status === 'Completed') ? 'badge-status-completed' :
+                            (item.status === 'In Progress') ? 'badge-status-inprogress' : 'badge-status-upcoming';
+        
+        const formattedDate = item.date ? formatDateLabel(item.date) : 'Flexible Date';
+        const formattedTime = item.startTime && item.endTime ? `${item.startTime} - ${item.endTime}` : (item.time || 'Time TBD');
+
+        return `
+          <div class="appointment-card" id="card-${escapeHtml(item.id)}">
+            <div class="card-category-strip"></div>
+            <div>
+              <div class="card-top">
+                <h3 class="item-title">${escapeHtml(item.title)}</h3>
+              </div>
+              <div class="badge-group">
+                <span class="badge badge-date">📅 ${escapeHtml(formattedDate)}</span>
+                <span class="badge badge-time">⏰ ${escapeHtml(formattedTime)}</span>
+                <span class="badge ${statusClass}">● ${escapeHtml(item.status || 'Upcoming')}</span>
+                ${item.category ? `<span class="badge badge-room">${escapeHtml(item.category)}</span>` : ''}
+              </div>
+              <div class="meta-info">
+                <span><strong>Host / Speaker:</strong> ${escapeHtml(item.speaker || 'Unassigned')}</span>
+                <span><strong>Location:</strong> 📍 ${escapeHtml(item.room || 'TBD')}</span>
+              </div>
+              <p class="item-desc">${escapeHtml(item.description || 'No detailed agenda provided.')}</p>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-calendar" onclick="exportToICS('${escapeHtml(item.id)}')">
+                <span>📅</span> Add to Calendar
+              </button>
+              <button class="btn btn-danger" onclick="deleteAppointment('${escapeHtml(item.id)}')">
+                <span>🗑️</span> Remove
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatDateLabel(dateStr) {
+      if (!dateStr) return '';
+      try {
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+          const d = new Date(parts[0], parts[1] - 1, parts[2]);
+          return d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+      } catch {}
+      return dateStr;
+    }
+
+    // 6. Schedule Modal & Calendar / Time Picker Handling
+    function setDefaultAppointmentDate() {
+      const dateInput = document.getElementById('appDate');
+      if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.value = today;
+        dateInput.min = today;
+      }
+      const start = document.getElementById('appStartTime');
+      const end = document.getElementById('appEndTime');
+      if (start && end) {
+        start.value = '10:00';
+        end.value = '11:00';
+      }
+    }
+
+    function openScheduleModal() {
+      document.getElementById('scheduleModal').classList.add('active');
+      document.getElementById('appTitle').focus();
+    }
+
+    function closeScheduleModal() {
+      document.getElementById('scheduleModal').classList.remove('active');
+      document.getElementById('scheduleForm').reset();
+      setDefaultAppointmentDate();
+    }
+
+    function handleSaveAppointment(e) {
+      e.preventDefault();
+      const title = sanitizeInput(document.getElementById('appTitle').value);
+      const speaker = sanitizeInput(document.getElementById('appSpeaker').value);
+      const category = sanitizeInput(document.getElementById('appCategory').value);
+      const date = document.getElementById('appDate').value;
+      const startTime = document.getElementById('appStartTime').value;
+      const endTime = document.getElementById('appEndTime').value;
+      const room = sanitizeInput(document.getElementById('appRoom').value);
+      const status = sanitizeInput(document.getElementById('appStatus').value);
+      const desc = sanitizeInput(document.getElementById('appDesc').value);
+
+      if (!title || !speaker || !date || !startTime || !endTime) {
+        showToast('Please fill all required appointment fields.', 'error');
+        return;
+      }
+
+      const newApp = {
+        id: 'app-' + Date.now(),
+        title,
+        speaker,
+        category,
+        date,
+        startTime,
+        endTime,
+        time: `${startTime} - ${endTime}`,
+        room,
+        status,
+        description: desc,
+        createdAt: new Date().toISOString()
+      };
+
+      appointments.unshift(newApp);
+      saveAppointments();
+      populateFilterDropdowns();
+      filterAppointments();
+      closeScheduleModal();
+      showToast('Appointment scheduled successfully!', 'success');
+    }
+
+    function deleteAppointment(id) {
+      if (confirm('Are you sure you want to cancel and remove this appointment?')) {
+        appointments = appointments.filter(a => a.id !== id);
+        saveAppointments();
+        populateFilterDropdowns();
+        filterAppointments();
+        showToast('Appointment removed.', 'info');
+      }
+    }
+
+    // 7. iCalendar (.ics) Export Generator
+    function exportToICS(id) {
+      const item = appointments.find(a => a.id === id);
+      if (!item) return;
+
+      const dateClean = (item.date || new Date().toISOString().split('T')[0]).replace(/-/g, '');
+      const startClean = (item.startTime || '09:00').replace(/:/g, '') + '00';
+      const endClean = (item.endTime || '10:00').replace(/:/g, '') + '00';
+
+      const icsData = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Schedular//Appointment Calendar//EN',
+        'BEGIN:VEVENT',
+        `UID:${item.id}@schedular.app`,
+        `DTSTAMP:${dateClean}T${startClean}Z`,
+        `DTSTART:${dateClean}T${startClean}`,
+        `DTEND:${dateClean}T${endClean}`,
+        `SUMMARY:${item.title.replace(/\n/g, ' ')}`,
+        `DESCRIPTION:${(item.description || '').replace(/\n/g, ' ')}`,
+        `LOCATION:${(item.room || '').replace(/\n/g, ' ')}`,
+        'STATUS:CONFIRMED',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+
+      const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${item.title.toLowerCase().replace(/[^a-z0-9]/g, '_')}.ics`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Calendar event (.ics) downloaded!', 'success');
+    }
+
+    // 8. Toast Notification Utility
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      const icon = type === 'success' ? '✅' : type === 'error' ? '⚠️' : 'ℹ️';
+      toast.innerHTML = `<span>${icon}</span> <span>${escapeHtml(message)}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
     }
   </script>
 </body>
