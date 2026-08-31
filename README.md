@@ -1,1 +1,1 @@
-# Event Talks App
+# Schedular

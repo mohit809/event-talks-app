@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedular</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #202124;
+      --text-muted: #5f6368;
+      --border: #dadce0;
+      --badge-bg: #e8f0fe;
+      --badge-text: #1967d2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 2rem 1rem;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+    .talks-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .talk-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .talk-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.12);
+    }
+    .talk-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .talk-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .time-badge {
+      background-color: var(--badge-bg);
+      color: var(--badge-text);
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .meta {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .meta span strong {
+      color: var(--text);
+    }
+    .talk-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎤 Schedular</h1>
+      <p>Event Talks & Presentations Schedule</p>
+    </header>
+
+    <div id="talks-container" class="talks-grid">
+      <p>Loading schedule...</p>
+    </div>
+  </div>
+
+  <script>
+    fetch('talks.json')
+      .then(res => res.json())
+      .then(talks => {
+        const container = document.getElementById('talks-container');
+        container.innerHTML = '';
+        talks.forEach(talk => {
+          const card = document.createElement('div');
+          card.className = 'talk-card';
+          card.innerHTML = `
+            <div class="talk-header">
+              <h2 class="talk-title">${talk.title}</h2>
+              <span class="time-badge">${talk.time}</span>
+            </div>
+            <div class="meta">
+              <span><strong>Speaker:</strong> ${talk.speaker}</span>
+              <span><strong>Room:</strong> ${talk.room}</span>
+            </div>
+            <p class="talk-desc">${talk.description}</p>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        document.getElementById('talks-container').innerHTML = `<p style="color:red;">Error loading talks: ${err.message}</p>`;
+      });
+  </script>
+</body>
+</html>
