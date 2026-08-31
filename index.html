@@ -3,43 +3,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Schedular</title>
+  <title>Schedular - Event & Task Management</title>
   <style>
     :root {
-      --primary: #1a73e8;
-      --bg: #f8f9fa;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --bg: #f8fafc;
       --card-bg: #ffffff;
-      --text: #202124;
-      --text-muted: #5f6368;
-      --border: #dadce0;
-      --badge-bg: #e8f0fe;
-      --badge-text: #1967d2;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --badge-bg: #eff6ff;
+      --badge-text: #2563eb;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      padding: 2rem 1rem;
       line-height: 1.5;
+      padding-bottom: 3rem;
     }
-    .container {
-      max-width: 800px;
+
+    /* Navbar */
+    .navbar {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .nav-container {
+      max-width: 1000px;
       margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 1.25rem;
     }
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    header h1 {
-      font-size: 2rem;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.35rem;
+      font-weight: 700;
       color: var(--primary);
-      margin-bottom: 0.5rem;
+      text-decoration: none;
     }
-    header p {
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease-in-out;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+    .btn-outline {
+      background-color: transparent;
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .btn-danger {
+      background-color: transparent;
+      color: var(--danger);
+      border: 1px solid #fee2e2;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+    }
+    .btn-danger:hover {
+      background-color: #fee2e2;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto 0;
+      padding: 0 1.25rem;
+    }
+
+    /* Controls Bar */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 0.6rem 1rem 0.6rem 2.2rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      background: var(--card-bg);
+    }
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+    }
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
       color: var(--text-muted);
-      font-size: 1.1rem;
     }
+    .filter-select {
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--card-bg);
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Task & Talk Cards */
     .talks-grid {
       display: flex;
       flex-direction: column;
@@ -48,16 +163,15 @@
     .talk-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      border-radius: 10px;
+      padding: 1.35rem;
+      box-shadow: var(--shadow);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
     .talk-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.12);
+      box-shadow: var(--shadow-lg);
     }
-    .talk-header {
+    .card-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -65,73 +179,511 @@
       margin-bottom: 0.5rem;
     }
     .talk-title {
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 1.25rem;
+      font-weight: 700;
       color: var(--text);
     }
-    .time-badge {
+    .badge-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .badge {
       background-color: var(--badge-bg);
       color: var(--badge-text);
-      padding: 0.25rem 0.6rem;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      font-weight: 500;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
       white-space: nowrap;
     }
-    .meta {
+    .badge-room {
+      background-color: #f3e8ff;
+      color: #7e22ce;
+    }
+    .meta-info {
       display: flex;
+      flex-wrap: wrap;
       gap: 1.5rem;
       font-size: 0.9rem;
       color: var(--text-muted);
       margin-bottom: 0.75rem;
     }
-    .meta span strong {
+    .meta-info span strong {
       color: var(--text);
     }
     .talk-desc {
-      color: var(--text-muted);
+      color: #475569;
       font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      background: var(--card-bg);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(2px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: var(--card-bg);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+      padding: 1.75rem;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      animation: modalSlide 0.2s ease-out;
+    }
+    @keyframes modalSlide {
+      from { transform: translateY(15px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+    .close-btn:hover {
+      color: var(--text);
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      background: #fafafa;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f1f5f9;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>🎤 Schedular</h1>
-      <p>Event Talks & Presentations Schedule</p>
-    </header>
 
-    <div id="talks-container" class="talks-grid">
-      <p>Loading schedule...</p>
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <span>📅</span> Schedular
+      </a>
+      <div class="nav-actions">
+        <button class="btn btn-primary" onclick="openAddTaskModal()">
+          <span>➕</span> Add New Task
+        </button>
+        <div id="auth-section">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="container">
+    <div class="controls">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search tasks, speakers, topics, or rooms..." oninput="filterTasks()">
+      </div>
+      <select id="roomFilter" class="filter-select" onchange="filterTasks()">
+        <option value="ALL">All Rooms</option>
+      </select>
+    </div>
+
+    <!-- Talks / Tasks List -->
+    <div id="talksContainer" class="talks-grid">
+      <div class="empty-state">Loading schedule...</div>
+    </div>
+  </div>
+
+  <!-- Add New Task / Talk Modal -->
+  <div id="addTaskModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">➕ Add New Task / Talk</h2>
+        <button class="close-btn" onclick="closeAddTaskModal()">&times;</button>
+      </div>
+      <form id="addTaskForm" onsubmit="handleAddTask(event)">
+        <div class="form-group">
+          <label for="taskTitle">Task / Talk Title *</label>
+          <input type="text" id="taskTitle" required placeholder="e.g., Deep Dive into Microservices">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskSpeaker">Speaker / Assignee *</label>
+            <input type="text" id="taskSpeaker" required placeholder="e.g., Jane Doe">
+          </div>
+          <div class="form-group">
+            <label for="taskRoom">Room / Location *</label>
+            <input type="text" id="taskRoom" required placeholder="e.g., Hall C or Online">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="taskTime">Time Slot / Duration *</label>
+          <input type="text" id="taskTime" required placeholder="e.g., 14:00 - 15:00">
+        </div>
+        <div class="form-group">
+          <label for="taskDesc">Description</label>
+          <textarea id="taskDesc" rows="3" placeholder="Overview of the task, topic, or agenda..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
+          Save Task to Schedular
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Login / Sign In Modal -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="authModalTitle">Sign In to Schedular</h2>
+        <button class="close-btn" onclick="closeAuthModal()">&times;</button>
+      </div>
+      <form id="authForm" onsubmit="handleAuthSubmit(event)">
+        <div class="form-group" id="nameGroup" style="display: none;">
+          <label for="authName">Full Name</label>
+          <input type="text" id="authName" placeholder="e.g., Jane Doe">
+        </div>
+        <div class="form-group">
+          <label for="authEmail">Email Address</label>
+          <input type="email" id="authEmail" required placeholder="user@example.com">
+        </div>
+        <div class="form-group">
+          <label for="authPassword">Password</label>
+          <input type="password" id="authPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" id="authSubmitBtn">
+          Sign In
+        </button>
+      </form>
+      <div style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+        <span id="authToggleText">Don't have an account?</span>
+        <a href="javascript:void(0)" onclick="toggleAuthMode()" id="authToggleLink" style="color: var(--primary); font-weight: 600; text-decoration: none; margin-left: 0.25rem;">
+          Sign Up
+        </a>
+      </div>
     </div>
   </div>
 
   <script>
-    fetch('talks.json')
-      .then(res => res.json())
-      .then(talks => {
-        const container = document.getElementById('talks-container');
-        container.innerHTML = '';
-        talks.forEach(talk => {
-          const card = document.createElement('div');
-          card.className = 'talk-card';
-          card.innerHTML = `
-            <div class="talk-header">
-              <h2 class="talk-title">${talk.title}</h2>
-              <span class="time-badge">${talk.time}</span>
-            </div>
-            <div class="meta">
-              <span><strong>Speaker:</strong> ${talk.speaker}</span>
-              <span><strong>Room:</strong> ${talk.room}</span>
-            </div>
-            <p class="talk-desc">${talk.description}</p>
-          `;
-          container.appendChild(card);
-        });
-      })
-      .catch(err => {
-        document.getElementById('talks-container').innerHTML = `<p style="color:red;">Error loading talks: ${err.message}</p>`;
+    const STORAGE_KEY = 'schedular_tasks_v1';
+    const USER_KEY = 'schedular_current_user_v1';
+    let allTasks = [];
+    let isSignUpMode = false;
+
+    // Initialize App
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAuthNav();
+      loadTasks();
+    });
+
+    // Load Tasks (from localStorage or default talks.json)
+    async function loadTasks() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          allTasks = JSON.parse(stored);
+        } catch (e) {
+          allTasks = [];
+        }
+      } else {
+        try {
+          const res = await fetch('talks.json');
+          if (res.ok) {
+            allTasks = await res.json();
+            saveTasksToStorage();
+          }
+        } catch (err) {
+          console.warn('Could not load talks.json, using defaults:', err);
+          allTasks = [
+            { id: '1', title: 'Introduction to AI Agents', speaker: 'Alice Johnson', time: '09:00 - 10:00', room: 'Hall A', description: 'Overview of autonomous AI agents.' }
+          ];
+        }
+      }
+      populateRoomFilter();
+      renderTasks(allTasks);
+    }
+
+    function saveTasksToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(allTasks));
+    }
+
+    // Populate Room Filter Options
+    function populateRoomFilter() {
+      const select = document.getElementById('roomFilter');
+      const currentVal = select.value;
+      const rooms = Array.from(new Set(allTasks.map(t => t.room).filter(Boolean)));
+      select.innerHTML = '<option value="ALL">All Rooms</option>';
+      rooms.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = r;
+        select.appendChild(opt);
       });
+      if (rooms.includes(currentVal)) select.value = currentVal;
+    }
+
+    // Render Tasks List
+    function renderTasks(tasks) {
+      const container = document.getElementById('talksContainer');
+      if (!tasks || tasks.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No tasks found.</p>
+            <button class="btn btn-primary" onclick="openAddTaskModal()">Add the first task</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tasks.map(task => `
+        <div class="talk-card" id="task-${task.id}">
+          <div class="card-top">
+            <h2 class="talk-title">${escapeHtml(task.title)}</h2>
+            <div class="badge-group">
+              <span class="badge badge-room">📍 ${escapeHtml(task.room || 'General')}</span>
+              <span class="badge">⏰ ${escapeHtml(task.time || 'TBD')}</span>
+            </div>
+          </div>
+          <div class="meta-info">
+            <span><strong>Speaker / Lead:</strong> ${escapeHtml(task.speaker || 'Unassigned')}</span>
+          </div>
+          <p class="talk-desc">${escapeHtml(task.description || 'No description provided.')}</p>
+          <div class="card-footer">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Task ID: ${escapeHtml(task.id)}</span>
+            <button class="btn btn-danger" onclick="deleteTask('${task.id}')">🗑️ Remove</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Filter Tasks by Search & Room
+    function filterTasks() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const selectedRoom = document.getElementById('roomFilter').value;
+
+      const filtered = allTasks.filter(task => {
+        const matchQuery = !query ||
+          (task.title && task.title.toLowerCase().includes(query)) ||
+          (task.speaker && task.speaker.toLowerCase().includes(query)) ||
+          (task.description && task.description.toLowerCase().includes(query)) ||
+          (task.room && task.room.toLowerCase().includes(query));
+
+        const matchRoom = selectedRoom === 'ALL' || task.room === selectedRoom;
+        return matchQuery && matchRoom;
+      });
+
+      renderTasks(filtered);
+    }
+
+    // Add Task Modal Logic
+    function openAddTaskModal() {
+      document.getElementById('addTaskModal').classList.add('active');
+      document.getElementById('taskTitle').focus();
+    }
+    function closeAddTaskModal() {
+      document.getElementById('addTaskModal').classList.remove('active');
+      document.getElementById('addTaskForm').reset();
+    }
+    function handleAddTask(event) {
+      event.preventDefault();
+      const title = document.getElementById('taskTitle').value.trim();
+      const speaker = document.getElementById('taskSpeaker').value.trim();
+      const room = document.getElementById('taskRoom').value.trim();
+      const time = document.getElementById('taskTime').value.trim();
+      const desc = document.getElementById('taskDesc').value.trim();
+
+      const newTask = {
+        id: 'task-' + Date.now(),
+        title,
+        speaker,
+        room,
+        time,
+        description: desc
+      };
+
+      allTasks.unshift(newTask);
+      saveTasksToStorage();
+      populateRoomFilter();
+      filterTasks();
+      closeAddTaskModal();
+    }
+
+    function deleteTask(id) {
+      if (confirm('Are you sure you want to remove this task?')) {
+        allTasks = allTasks.filter(t => t.id !== id);
+        saveTasksToStorage();
+        populateRoomFilter();
+        filterTasks();
+      }
+    }
+
+    // Authentication Logic (Sign In / Sign Up)
+    function getCurrentUser() {
+      const user = localStorage.getItem(USER_KEY);
+      return user ? JSON.parse(user) : null;
+    }
+
+    function renderAuthNav() {
+      const authSection = document.getElementById('auth-section');
+      const user = getCurrentUser();
+      if (user) {
+        authSection.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div class="user-pill">👤 ${escapeHtml(user.name || user.email.split('@')[0])}</div>
+            <button class="btn btn-outline" onclick="handleLogout()">Sign Out</button>
+          </div>
+        `;
+      } else {
+        authSection.innerHTML = `
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" onclick="openAuthModal(false)">Sign In</button>
+            <button class="btn btn-primary" onclick="openAuthModal(true)">Sign Up</button>
+          </div>
+        `;
+      }
+    }
+
+    function openAuthModal(signup = false) {
+      isSignUpMode = signup;
+      updateAuthModalUI();
+      document.getElementById('authModal').classList.add('active');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.remove('active');
+      document.getElementById('authForm').reset();
+    }
+
+    function toggleAuthMode() {
+      isSignUpMode = !isSignUpMode;
+      updateAuthModalUI();
+    }
+
+    function updateAuthModalUI() {
+      const title = document.getElementById('authModalTitle');
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const nameGroup = document.getElementById('nameGroup');
+      const toggleText = document.getElementById('authToggleText');
+      const toggleLink = document.getElementById('authToggleLink');
+
+      if (isSignUpMode) {
+        title.textContent = 'Create Schedular Account';
+        submitBtn.textContent = 'Create Account';
+        nameGroup.style.display = 'block';
+        toggleText.textContent = 'Already have an account?';
+        toggleLink.textContent = 'Sign In';
+      } else {
+        title.textContent = 'Sign In to Schedular';
+        submitBtn.textContent = 'Sign In';
+        nameGroup.style.display = 'none';
+        toggleText.textContent = "Don't have an account?";
+        toggleLink.textContent = 'Sign Up';
+      }
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim();
+      const name = isSignUpMode ? (document.getElementById('authName').value.trim() || email.split('@')[0]) : email.split('@')[0];
+
+      const user = { email, name, loggedInAt: new Date().toISOString() };
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      renderAuthNav();
+      closeAuthModal();
+    }
+
+    function handleLogout() {
+      localStorage.removeItem(USER_KEY);
+      renderAuthNav();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag] || tag));
+    }
   </script>
 </body>
 </html>
