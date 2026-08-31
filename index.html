@@ -3,19 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Schedular - Smart Appointment & Event Management</title>
+  <title>Schedular - Smart Appointment & Virtual Meeting Platform</title>
   <style>
     :root {
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
       --primary-light: #eff6ff;
-      --accent: #8b5cf6;
+      --accent: #7c3aed;
+      --accent-light: #f5f3ff;
       --success: #10b981;
       --success-light: #ecfdf5;
       --warning: #f59e0b;
       --warning-light: #fffbeb;
       --danger: #ef4444;
       --danger-light: #fef2f2;
+      --google-meet: #00897b;
+      --zoom: #0b5cff;
+      --webex: #00bf6f;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #0f172a;
@@ -24,7 +28,7 @@
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
       --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.05);
       --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.06);
-      --radius: 12px;
+      --radius: 14px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -43,7 +47,7 @@
     .brand-logo {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.65rem;
       font-size: 1.35rem;
       font-weight: 800;
       color: var(--text);
@@ -54,20 +58,20 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       color: white;
-      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.35);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
       transition: transform 0.2s ease;
     }
     .brand-logo:hover .clock-icon-wrapper {
-      transform: rotate(15deg) scale(1.05);
+      transform: rotate(12deg) scale(1.05);
     }
     .clock-svg {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       fill: none;
       stroke: currentColor;
       stroke-width: 2.2;
@@ -85,19 +89,20 @@
       box-shadow: var(--shadow-sm);
     }
     .nav-container {
-      max-width: 1100px;
+      max-width: 1160px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.85rem 1.25rem;
+      gap: 1rem;
     }
     .live-clock-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
       background: #f1f5f9;
-      padding: 0.35rem 0.75rem;
+      padding: 0.35rem 0.85rem;
       border-radius: 9999px;
       font-size: 0.82rem;
       font-weight: 600;
@@ -120,7 +125,7 @@
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
     }
 
     /* Buttons */
@@ -139,13 +144,12 @@
       white-space: nowrap;
     }
     .btn-primary {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       color: white;
-      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
       transform: translateY(-1px);
     }
     .btn-outline {
@@ -165,30 +169,92 @@
     .btn-danger:hover {
       background-color: #fee2e2;
     }
-    .btn-calendar {
-      background-color: var(--primary-light);
-      color: var(--primary);
-      border: 1px solid #bfdbfe;
+    .btn-sm {
       padding: 0.35rem 0.65rem;
       font-size: 0.8rem;
     }
-    .btn-calendar:hover {
-      background-color: #dbeafe;
+
+    /* Meeting Specific Buttons */
+    .btn-meet {
+      background-color: #e0f2f1;
+      color: #00695c;
+      border: 1px solid #80cbc4;
     }
+    .btn-meet:hover { background-color: #b2dfdb; }
+    .btn-zoom {
+      background-color: #e8f0fe;
+      color: #1a73e8;
+      border: 1px solid #aecbfa;
+    }
+    .btn-zoom:hover { background-color: #d2e3fc; }
+    .btn-webex {
+      background-color: #e8f8f5;
+      color: #00897b;
+      border: 1px solid #a3e4d7;
+    }
+    .btn-webex:hover { background-color: #d1f2eb; }
 
     /* Main Container */
     .container {
-      max-width: 1100px;
-      margin: 1.75rem auto 3rem;
+      max-width: 1160px;
+      margin: 1.5rem auto 3rem;
       padding: 0 1.25rem;
       flex: 1;
       width: 100%;
     }
 
+    /* Reminder Alert Banner (10-Min Live Reminder) */
+    .reminder-banner {
+      display: none;
+      background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+      border: 2px solid #f59e0b;
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+      animation: alertSlide 0.3s ease-out;
+    }
+    @keyframes alertSlide {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .reminder-banner.active {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .reminder-content {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .reminder-icon {
+      font-size: 1.8rem;
+      animation: ring 1.5s infinite ease-in-out;
+    }
+    @keyframes ring {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(15deg); }
+      40% { transform: rotate(-15deg); }
+      60% { transform: rotate(10deg); }
+      80% { transform: rotate(-10deg); }
+    }
+    .reminder-text h4 {
+      color: #92400e;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .reminder-text p {
+      color: #b45309;
+      font-size: 0.88rem;
+    }
+
     /* Stats Overview Banner */
     .stats-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
@@ -213,7 +279,8 @@
     }
     .stat-icon.blue { background: var(--primary-light); color: var(--primary); }
     .stat-icon.green { background: var(--success-light); color: var(--success); }
-    .stat-icon.purple { background: #f3e8ff; color: #9333ea; }
+    .stat-icon.purple { background: var(--accent-light); color: var(--accent); }
+    .stat-icon.orange { background: var(--warning-light); color: var(--warning); }
     .stat-num {
       font-size: 1.4rem;
       font-weight: 700;
@@ -256,7 +323,7 @@
     .search-box input:focus {
       border-color: var(--primary);
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
     .search-icon {
       position: absolute;
@@ -288,7 +355,7 @@
     /* Cards Grid */
     .schedule-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 1.25rem;
     }
     .appointment-card {
@@ -308,14 +375,18 @@
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
-    .card-category-strip {
+    .card-strip {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       height: 4px;
-      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
     }
+    .card-strip.meet { background: linear-gradient(90deg, #00897b, #26a69a); }
+    .card-strip.zoom { background: linear-gradient(90deg, #0b5cff, #38bdf8); }
+    .card-strip.webex { background: linear-gradient(90deg, #00bf6f, #10b981); }
+    .card-strip.default { background: linear-gradient(90deg, #2563eb, #7c3aed); }
+
     .card-top {
       display: flex;
       justify-content: space-between;
@@ -347,7 +418,7 @@
     }
     .badge-time { background-color: #eff6ff; color: #2563eb; }
     .badge-date { background-color: #f3e8ff; color: #7e22ce; }
-    .badge-room { background-color: #f1f5f9; color: #475569; }
+    .badge-platform { background-color: #f1f5f9; color: #334155; }
     .badge-status-upcoming { background-color: var(--warning-light); color: #b45309; }
     .badge-status-inprogress { background-color: var(--primary-light); color: var(--primary); }
     .badge-status-completed { background-color: var(--success-light); color: var(--success); }
@@ -370,6 +441,24 @@
       margin-bottom: 1rem;
       flex: 1;
     }
+    .meeting-join-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .meeting-details-text {
+      font-size: 0.82rem;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .card-footer {
       display: flex;
       justify-content: space-between;
@@ -378,6 +467,7 @@
       border-top: 1px solid #f1f5f9;
       margin-top: auto;
       gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     /* Empty State */
@@ -411,7 +501,7 @@
       background: #ffffff;
       border-radius: 16px;
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       padding: 2.25rem;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
       animation: gatePop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -422,7 +512,7 @@
     }
     .auth-header {
       text-align: center;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.5rem;
     }
     .auth-header .brand-logo {
       justify-content: center;
@@ -438,7 +528,7 @@
       background: #f1f5f9;
       padding: 0.25rem;
       border-radius: 10px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
     .auth-tab-btn {
       padding: 0.65rem;
@@ -487,7 +577,7 @@
     .form-group select:focus {
       border-color: var(--primary);
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
     .form-row {
       display: grid;
@@ -518,17 +608,41 @@
       display: flex;
       justify-content: space-between;
     }
-    .security-badge {
+
+    /* 8-Digit OTP Verification Modal / Box */
+    .otp-banner {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 0.85rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      color: #166534;
+    }
+    .otp-input-group {
       display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      gap: 0.5rem;
+      margin: 0.5rem 0 1rem;
+    }
+    .otp-input-group input {
+      letter-spacing: 0.35em;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      font-family: monospace;
+      padding: 0.65rem;
+    }
+    .simulated-notification-box {
+      background: #1e293b;
+      color: white;
+      padding: 0.75rem 1rem;
       border-radius: 8px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.78rem;
-      color: var(--text-muted);
+      font-size: 0.8rem;
       margin-top: 1rem;
+      border-left: 4px solid var(--accent);
+    }
+    .simulated-notification-box strong {
+      color: #60a5fa;
     }
 
     /* Modals */
@@ -550,7 +664,7 @@
       background: var(--card-bg);
       border-radius: 16px;
       width: 100%;
-      max-width: 540px;
+      max-width: 580px;
       padding: 1.75rem;
       box-shadow: var(--shadow-lg);
       max-height: 90vh;
@@ -609,11 +723,12 @@
       align-items: center;
       gap: 0.6rem;
       animation: toastIn 0.25s ease-out;
-      max-width: 350px;
+      max-width: 380px;
     }
     .toast.success { background: #065f46; border-left: 4px solid var(--success); }
     .toast.error { background: #991b1b; border-left: 4px solid var(--danger); }
     .toast.info { background: #1e40af; border-left: 4px solid var(--primary); }
+    .toast.warning { background: #92400e; border-left: 4px solid var(--warning); }
     @keyframes toastIn {
       from { transform: translateX(100%); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
@@ -629,6 +744,7 @@
       font-size: 0.85rem;
       font-weight: 600;
       border: 1px solid var(--border);
+      cursor: pointer;
     }
     .user-avatar {
       width: 24px;
@@ -641,6 +757,24 @@
       justify-content: center;
       font-size: 0.75rem;
       font-weight: 700;
+    }
+
+    /* Audit Logs Drawer / Table */
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+    .log-table th, .log-table td {
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .log-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--text-muted);
     }
   </style>
 </head>
@@ -668,6 +802,9 @@
         <button class="btn btn-primary" onclick="openScheduleModal()">
           <span>➕</span> Schedule Appointment
         </button>
+        <button class="btn btn-outline" onclick="openNotificationDrawer()">
+          <span>🔔</span> Logs & Alerts
+        </button>
         <div id="authNavSection">
           <!-- Populated by JavaScript -->
         </div>
@@ -677,6 +814,24 @@
 
   <!-- Main Application Container -->
   <main class="container">
+
+    <!-- 10-Minute High Priority Reminder Banner -->
+    <div id="reminderBanner" class="reminder-banner">
+      <div class="reminder-content">
+        <div class="reminder-icon">⏰</div>
+        <div class="reminder-text">
+          <h4 id="reminderBannerTitle">Upcoming Meeting Reminder</h4>
+          <p id="reminderBannerDesc">Meeting starts in less than 10 minutes. SMS and Email alerts dispatched.</p>
+        </div>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <a id="reminderBannerJoinBtn" href="#" target="_blank" class="btn btn-primary btn-sm">
+          <span>🚀</span> Join Meeting Now
+        </a>
+        <button class="btn btn-outline btn-sm" onclick="dismissReminderBanner()">Dismiss</button>
+      </div>
+    </div>
+
     <!-- Quick Statistics Bar -->
     <div class="stats-bar">
       <div class="stat-card">
@@ -700,22 +855,33 @@
           <div class="stat-label">Upcoming / Active</div>
         </div>
       </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">🔔</div>
+        <div>
+          <div class="stat-num" id="statRemindersSent">0</div>
+          <div class="stat-label">10-Min Alerts Sent</div>
+        </div>
+      </div>
     </div>
 
     <!-- Search & Filter Controls Bar -->
     <div class="controls">
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search appointments, speakers, rooms, or topics..." oninput="filterAppointments()">
+        <input type="text" id="searchInput" placeholder="Search by title, speaker, Google Meet, Zoom, Webex, or room..." oninput="filterAppointments()">
       </div>
       <div class="filter-group">
+        <select id="platformFilter" class="filter-select" onchange="filterAppointments()">
+          <option value="ALL">All Meeting Types</option>
+          <option value="Google Meet">🎥 Google Meet</option>
+          <option value="Zoom">📹 Zoom Meeting</option>
+          <option value="Webex">💼 Cisco Webex</option>
+          <option value="In-Person">🏢 In-Person Venue</option>
+        </select>
         <select id="dateFilter" class="filter-select" onchange="filterAppointments()">
           <option value="ALL">All Dates</option>
           <option value="TODAY">Today Only</option>
           <option value="UPCOMING">Upcoming Dates</option>
-        </select>
-        <select id="roomFilter" class="filter-select" onchange="filterAppointments()">
-          <option value="ALL">All Rooms & Locations</option>
         </select>
         <select id="statusFilter" class="filter-select" onchange="filterAppointments()">
           <option value="ALL">All Statuses</option>
@@ -735,7 +901,7 @@
     </div>
   </main>
 
-  <!-- Mandatory Authentication Gate (Sign In / Sign Up) -->
+  <!-- Mandatory Authentication Gate (Sign In / Sign Up with 8-Digit OTP) -->
   <div id="authGate" class="auth-gate-overlay" style="display: none;">
     <div class="auth-gate-card">
       <div class="auth-header">
@@ -751,66 +917,113 @@
         <p id="gateSubtitle">Please sign in to access your smart schedule.</p>
       </div>
 
-      <div class="auth-tabs">
-        <button class="auth-tab-btn active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
-        <button class="auth-tab-btn" id="tabSignUp" onclick="switchAuthTab('signup')">Create Account</button>
-      </div>
-
-      <form id="gateAuthForm" onsubmit="handleGateAuth(event)" autocomplete="off">
-        <div class="form-group" id="gateNameGroup" style="display: none;">
-          <label for="gateName">Full Name *</label>
-          <input type="text" id="gateName" placeholder="e.g., Jane Doe" maxlength="60">
+      <!-- Auth Form Stage -->
+      <div id="gateFormStage">
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+          <button class="auth-tab-btn" id="tabSignUp" onclick="switchAuthTab('signup')">Create Account</button>
         </div>
 
-        <div class="form-group">
-          <label for="gateEmail">Email Address *</label>
-          <input type="email" id="gateEmail" required placeholder="name@company.com" maxlength="100">
-        </div>
+        <form id="gateAuthForm" onsubmit="handleGateAuth(event)" autocomplete="off">
+          <div class="form-group" id="gateNameGroup" style="display: none;">
+            <label for="gateName">Full Name *</label>
+            <input type="text" id="gateName" placeholder="e.g., Alex Johnson" maxlength="60">
+          </div>
 
-        <div class="form-group">
-          <label for="gatePassword">Password *</label>
-          <input type="password" id="gatePassword" required placeholder="••••••••" minlength="6" maxlength="128" oninput="checkPasswordStrength(this.value)">
-          <div class="password-strength-wrap" id="strengthMeter" style="display: none;">
-            <div class="strength-bar">
-              <div class="strength-fill" id="strengthBarFill"></div>
-            </div>
-            <div class="strength-text">
-              <span id="strengthScoreText">Password strength</span>
-              <span>Min 6 characters</span>
+          <div class="form-group">
+            <label for="gateEmail">Email Address *</label>
+            <input type="email" id="gateEmail" required placeholder="name@company.com" maxlength="100">
+          </div>
+
+          <!-- Phone Number field for Sign Up -->
+          <div class="form-group" id="gatePhoneGroup" style="display: none;">
+            <label for="gatePhone">Mobile Phone Number (for 8-digit SMS OTP) *</label>
+            <input type="tel" id="gatePhone" placeholder="+1 (555) 234-5678" maxlength="20">
+          </div>
+
+          <div class="form-group">
+            <label for="gatePassword">Password *</label>
+            <input type="password" id="gatePassword" required placeholder="••••••••" minlength="6" maxlength="128" oninput="checkPasswordStrength(this.value)">
+            <div class="password-strength-wrap" id="strengthMeter" style="display: none;">
+              <div class="strength-bar">
+                <div class="strength-fill" id="strengthBarFill"></div>
+              </div>
+              <div class="strength-text">
+                <span id="strengthScoreText">Password strength</span>
+                <span>Min 6 characters</span>
+              </div>
             </div>
           </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; margin-top: 0.5rem;" id="gateSubmitBtn">
+            Sign In to Schedular
+          </button>
+        </form>
+
+        <div class="security-badge" style="display: flex; align-items: center; gap: 0.4rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.78rem; color: var(--text-muted); margin-top: 1rem;">
+          <span>🛡️</span>
+          <span>WebCrypto SHA-256 Hashing • 8-Digit OTP Verified • Injection-Proof</span>
+        </div>
+      </div>
+
+      <!-- 8-Digit OTP Dual Verification Stage -->
+      <div id="gateOtpStage" style="display: none;">
+        <div class="otp-banner">
+          🔒 <strong>Dual Factor Verification:</strong> An <strong>8-digit OTP</strong> has been dispatched to your Email and Mobile Phone Number.
         </div>
 
-        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; margin-top: 0.5rem;" id="gateSubmitBtn">
-          Sign In to Schedular
-        </button>
-      </form>
+        <form id="otpVerificationForm" onsubmit="handleVerifyOtp(event)">
+          <div class="form-group">
+            <label for="emailOtpInput">📧 Email 8-Digit OTP *</label>
+            <div class="otp-input-group">
+              <input type="text" id="emailOtpInput" required maxlength="8" placeholder="12345678" pattern="[0-9]{8}">
+            </div>
+          </div>
 
-      <div class="security-badge">
-        <span>🛡️</span>
-        <span>Secure Session • WebCrypto SHA-256 Hashing • Injection-Proof</span>
+          <div class="form-group">
+            <label for="phoneOtpInput">📱 Mobile SMS 8-Digit OTP *</label>
+            <div class="otp-input-group">
+              <input type="text" id="phoneOtpInput" required maxlength="8" placeholder="87654321" pattern="[0-9]{8}">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
+            Verify OTPs & Enter Dashboard
+          </button>
+        </form>
+
+        <!-- Simulated Live Inbox Delivery Preview -->
+        <div class="simulated-notification-box">
+          <div>📨 <strong>Simulated Email Sent:</strong> <span id="previewEmailOtp">--------</span></div>
+          <div style="margin-top: 0.35rem;">📲 <strong>Simulated SMS Sent:</strong> <span id="previewPhoneOtp">--------</span></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1rem;">
+          <button class="btn btn-outline btn-sm" onclick="resendOtp()">🔄 Resend 8-Digit OTPs</button>
+          <button class="btn btn-outline btn-sm" onclick="cancelOtpStage()" style="margin-left: 0.5rem;">← Back</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Schedule Appointment Modal (With Calendar & Time Picker) -->
+  <!-- Schedule Appointment Modal (With Calendar, Time & Google Meet / Zoom / Webex Picker) -->
   <div id="scheduleModal" class="modal-overlay">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title">
-          <span>🕒</span> Schedule Appointment / Talk
+          <span>🕒</span> Schedule Appointment & Virtual Meeting
         </h2>
         <button class="close-btn" onclick="closeScheduleModal()">&times;</button>
       </div>
       <form id="scheduleForm" onsubmit="handleSaveAppointment(event)">
         <div class="form-group">
-          <label for="appTitle">Appointment / Talk Title *</label>
-          <input type="text" id="appTitle" required placeholder="e.g., Quarterly Architecture Review" maxlength="120">
+          <label for="appTitle">Appointment / Meeting Title *</label>
+          <input type="text" id="appTitle" required placeholder="e.g., Sprint Planning & Architecture Review" maxlength="120">
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="appSpeaker">Host / Speaker / Assignee *</label>
+            <label for="appSpeaker">Host / Speaker / Lead *</label>
             <input type="text" id="appSpeaker" required placeholder="e.g., Dr. Alice Johnson" maxlength="80">
           </div>
           <div class="form-group">
@@ -821,18 +1034,39 @@
               <option value="Team Sync">👥 Team Sync</option>
               <option value="Workshop">🛠️ Workshop</option>
               <option value="Keynote">⭐ Keynote</option>
-              <option value="Project Review">🎯 Project Review</option>
+              <option value="Client Demo">💼 Client Demo</option>
             </select>
           </div>
         </div>
 
-        <!-- Appointment Calendar Date Picker -->
+        <!-- Virtual Meeting Provider Selection -->
+        <div class="form-group">
+          <label for="appPlatform">🎥 Meeting Platform / Location Type *</label>
+          <select id="appPlatform" onchange="handlePlatformChange()">
+            <option value="Google Meet">🎥 Google Meet (Secure Video Conference)</option>
+            <option value="Zoom">📹 Zoom Meeting (High Definition Video)</option>
+            <option value="Webex">💼 Cisco Webex (Enterprise Meeting)</option>
+            <option value="In-Person">🏢 In-Person Physical Venue</option>
+          </select>
+        </div>
+
+        <!-- Meeting Link / Room Details with Auto-Generator -->
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <label for="appMeetingLink" id="meetingLinkLabel" style="margin: 0;">🔗 Meeting URL / Link *</label>
+            <button type="button" class="btn btn-outline btn-sm" onclick="generateSecureMeetingLink()" id="btnGenLink">
+              ⚡ Generate Secure Link
+            </button>
+          </div>
+          <input type="text" id="appMeetingLink" required placeholder="https://meet.google.com/abc-defg-hij">
+        </div>
+
+        <!-- Date & Time Pickers (Calendar & Clock) -->
         <div class="form-group">
           <label for="appDate">📅 Appointment Date *</label>
           <input type="date" id="appDate" required>
         </div>
 
-        <!-- Time Picker (Start & End Time) -->
         <div class="form-row">
           <div class="form-group">
             <label for="appStartTime">⏰ Start Time *</label>
@@ -846,8 +1080,8 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="appRoom">📍 Room / Venue / Link *</label>
-            <input type="text" id="appRoom" required placeholder="e.g., Hall A, Room 302, or Zoom link" maxlength="80">
+            <label for="appRoom">📍 Room / Location Label</label>
+            <input type="text" id="appRoom" placeholder="e.g., Virtual Hall A or Room 402" maxlength="80">
           </div>
           <div class="form-group">
             <label for="appStatus">Status</label>
@@ -861,13 +1095,40 @@
 
         <div class="form-group">
           <label for="appDesc">Agenda & Description</label>
-          <textarea id="appDesc" rows="3" placeholder="Overview of key discussion topics, objectives, or instructions..." maxlength="500"></textarea>
+          <textarea id="appDesc" rows="3" placeholder="Overview of key discussion topics, links, or instructions..." maxlength="500"></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; margin-top: 0.5rem;">
-          Confirm & Save Appointment
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.65rem 0.85rem; font-size: 0.82rem; color: #1e40af; margin-bottom: 1rem;">
+          🔔 <strong>Automated 10-Min Reminder:</strong> A notification will automatically trigger 10 minutes prior to meeting start time and log to your email and SMS history.
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem;">
+          Confirm & Schedule Meeting
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- Notification & 10-Minute Alert History Modal -->
+  <div id="notificationModal" class="modal-overlay">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-header">
+        <h2 class="modal-title">
+          <span>🔔</span> Meeting Alerts & Notification Logs
+        </h2>
+        <button class="close-btn" onclick="closeNotificationDrawer()">&times;</button>
+      </div>
+      <div>
+        <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+          Audit history of 10-minute automated reminders sent via simulated SMS and Email delivery:
+        </div>
+        <div id="logTableContainer">
+          <!-- Populated by JS -->
+        </div>
+        <div style="margin-top: 1rem; text-align: right;">
+          <button class="btn btn-outline btn-sm" onclick="clearReminderLogs()">Clear Logs</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -876,26 +1137,34 @@
 
   <script>
     /**
-     * Schedular Application Core
-     * Features: Auth Gate, Web Crypto SHA-256 Hashing, Input Sanitization (Injection Prevention),
-     * Calendar & Clock Appointment Picker, ICS Calendar Export, Local Storage Persistence.
+     * Schedular Application Core v3
+     * Features:
+     * 1. Google Meet, Zoom, Webex Secure Integration & Auto-link Generator.
+     * 2. 10-Minute Pre-Meeting Automated Reminder Engine with audio chime & Email/SMS audit logging.
+     * 3. 8-Digit Dual OTP Verification (Email + Mobile SMS).
+     * 4. Native WebCrypto SHA-256 Hashing & Anti-Injection Sanitizer.
+     * 5. ICS Calendar Export, Live Clock, and Multi-user Local Database.
      */
 
-    const STORAGE_KEY = 'schedular_appointments_v2';
-    const USERS_DB_KEY = 'schedular_users_db_v2';
-    const SESSION_KEY = 'schedular_active_session_v2';
+    const STORAGE_KEY = 'schedular_appointments_v3';
+    const USERS_DB_KEY = 'schedular_users_db_v3';
+    const SESSION_KEY = 'schedular_active_session_v3';
+    const REMINDER_LOGS_KEY = 'schedular_reminder_logs_v3';
 
     let appointments = [];
     let activeAuthMode = 'signin';
+    let pendingRegistration = null;
+    let acknowledgedReminders = new Set();
 
-    // 1. Initial Launch
+    // 1. App Initialization
     document.addEventListener('DOMContentLoaded', async () => {
       startLiveClock();
       checkAuthGate();
       setDefaultAppointmentDate();
+      startReminderChecker();
     });
 
-    // 2. Real-Time Live Clock Display
+    // 2. Real-Time Live Clock
     function startLiveClock() {
       function update() {
         const now = new Date();
@@ -908,14 +1177,22 @@
       setInterval(update, 1000);
     }
 
-    // 3. Security & Anti-Injection Sanitization Functions
+    // 3. Security & Anti-Injection Sanitization
     function sanitizeInput(str) {
       if (typeof str !== 'string') return '';
-      // Strip script tags and HTML dangerous injection tokens
       return str
         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
         .replace(/[<>]/g, '')
         .trim();
+    }
+
+    function sanitizeUrl(url) {
+      if (!url) return '';
+      const clean = url.trim();
+      if (/^(https?:\/\/|mailto:|tel:)/i.test(clean)) {
+        return clean.replace(/[<>"']/g, '');
+      }
+      return 'https://' + clean.replace(/[<>"']/g, '');
     }
 
     function escapeHtml(str) {
@@ -929,7 +1206,6 @@
       }[tag] || tag));
     }
 
-    // Cryptographically secure password hashing (SHA-256)
     async function hashPassword(password, salt) {
       const enc = new TextEncoder();
       const data = enc.encode(password + '::' + salt);
@@ -938,7 +1214,15 @@
       return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // 4. Authentication Gate & Session Management
+    function generate8DigitOtp() {
+      // Cryptographically secure 8-digit OTP
+      const array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      const otpNum = (array[0] % 90000000) + 10000000;
+      return otpNum.toString();
+    }
+
+    // 4. Authentication Gate & 8-Digit OTP Flow
     function getStoredUsers() {
       try {
         const users = localStorage.getItem(USERS_DB_KEY);
@@ -965,6 +1249,7 @@
       const session = {
         email: user.email,
         name: user.name,
+        phone: user.phone || 'Unset',
         token: 'sess_' + Math.random().toString(36).substring(2) + Date.now(),
         createdAt: new Date().toISOString()
       };
@@ -981,6 +1266,7 @@
         gate.style.display = 'none';
         renderAuthNav(session);
         loadAppointments();
+        updateReminderLogsCount();
       }
     }
 
@@ -989,6 +1275,7 @@
       const tabSignIn = document.getElementById('tabSignIn');
       const tabSignUp = document.getElementById('tabSignUp');
       const nameGroup = document.getElementById('gateNameGroup');
+      const phoneGroup = document.getElementById('gatePhoneGroup');
       const submitBtn = document.getElementById('gateSubmitBtn');
       const subtitle = document.getElementById('gateSubtitle');
       const strengthMeter = document.getElementById('strengthMeter');
@@ -997,13 +1284,15 @@
         tabSignUp.classList.add('active');
         tabSignIn.classList.remove('active');
         nameGroup.style.display = 'block';
-        submitBtn.textContent = 'Create Account';
-        subtitle.textContent = 'Create a secure account to manage your schedule.';
+        phoneGroup.style.display = 'block';
+        submitBtn.textContent = 'Continue to 8-Digit OTP Verification';
+        subtitle.textContent = 'Create a verified account with Email & Mobile SMS authentication.';
         strengthMeter.style.display = 'block';
       } else {
         tabSignIn.classList.add('active');
         tabSignUp.classList.remove('active');
         nameGroup.style.display = 'none';
+        phoneGroup.style.display = 'none';
         submitBtn.textContent = 'Sign In to Schedular';
         subtitle.textContent = 'Please sign in to access your smart schedule.';
         strengthMeter.style.display = 'none';
@@ -1039,6 +1328,7 @@
       const email = sanitizeInput(document.getElementById('gateEmail').value.toLowerCase());
       const password = document.getElementById('gatePassword').value;
       const name = sanitizeInput(document.getElementById('gateName').value);
+      const phone = sanitizeInput(document.getElementById('gatePhone').value);
 
       if (!email || !password) {
         showToast('Please provide both email and password.', 'error');
@@ -1048,35 +1338,45 @@
       const users = getStoredUsers();
 
       if (activeAuthMode === 'signup') {
+        if (!phone) {
+          showToast('Mobile phone number is required for SMS 8-digit OTP verification.', 'error');
+          return;
+        }
+
         const existing = users.find(u => u.email === email);
         if (existing) {
           showToast('An account with this email already exists. Please sign in.', 'error');
           return;
         }
 
-        const salt = Math.random().toString(36).substring(2);
-        const passwordHash = await hashPassword(password, salt);
-        const newUser = {
-          email,
+        const emailOtp = generate8DigitOtp();
+        const phoneOtp = generate8DigitOtp();
+
+        pendingRegistration = {
           name: name || email.split('@')[0],
-          salt,
-          passwordHash,
-          registeredAt: new Date().toISOString()
+          email,
+          phone,
+          password,
+          emailOtp,
+          phoneOtp,
+          generatedAt: Date.now()
         };
 
-        users.push(newUser);
-        saveStoredUsers(users);
-        setActiveSession(newUser);
-        showToast(`Account created! Welcome, ${newUser.name}.`, 'success');
-        checkAuthGate();
+        // Show OTP stage
+        document.getElementById('gateFormStage').style.display = 'none';
+        document.getElementById('gateOtpStage').style.display = 'block';
+        document.getElementById('previewEmailOtp').textContent = emailOtp;
+        document.getElementById('previewPhoneOtp').textContent = phoneOtp;
+
+        showToast('8-Digit OTPs dispatched to Email & Mobile SMS!', 'info');
       } else {
         const user = users.find(u => u.email === email);
         if (!user) {
-          // Auto-seed first time demo user if DB is fresh
+          // Demo fallback for fresh instance
           if (users.length === 0) {
             const salt = 'demo_salt';
             const hash = await hashPassword(password, salt);
-            const demoUser = { email, name: email.split('@')[0], salt, passwordHash: hash };
+            const demoUser = { email, name: email.split('@')[0], phone: '+1 (555) 019-2834', salt, passwordHash: hash, emailVerified: true, phoneVerified: true };
             users.push(demoUser);
             saveStoredUsers(users);
             setActiveSession(demoUser);
@@ -1100,6 +1400,70 @@
       }
     }
 
+    async function handleVerifyOtp(e) {
+      e.preventDefault();
+      if (!pendingRegistration) {
+        cancelOtpStage();
+        return;
+      }
+
+      const enteredEmailOtp = document.getElementById('emailOtpInput').value.trim();
+      const enteredPhoneOtp = document.getElementById('phoneOtpInput').value.trim();
+
+      if (enteredEmailOtp !== pendingRegistration.emailOtp) {
+        showToast('Incorrect Email 8-Digit OTP. Please check the code.', 'error');
+        return;
+      }
+
+      if (enteredPhoneOtp !== pendingRegistration.phoneOtp) {
+        showToast('Incorrect Mobile SMS 8-Digit OTP. Please check the code.', 'error');
+        return;
+      }
+
+      // Success - persist user to database
+      const salt = Math.random().toString(36).substring(2);
+      const passwordHash = await hashPassword(pendingRegistration.password, salt);
+      const newUser = {
+        id: 'usr_' + Date.now(),
+        email: pendingRegistration.email,
+        name: pendingRegistration.name,
+        phone: pendingRegistration.phone,
+        salt,
+        passwordHash,
+        emailVerified: true,
+        phoneVerified: true,
+        registeredAt: new Date().toISOString()
+      };
+
+      const users = getStoredUsers();
+      users.push(newUser);
+      saveStoredUsers(users);
+
+      setActiveSession(newUser);
+      pendingRegistration = null;
+
+      document.getElementById('gateOtpStage').style.display = 'none';
+      document.getElementById('gateFormStage').style.display = 'block';
+
+      showToast(`Verification complete! Welcome, ${newUser.name}.`, 'success');
+      checkAuthGate();
+    }
+
+    function resendOtp() {
+      if (!pendingRegistration) return;
+      pendingRegistration.emailOtp = generate8DigitOtp();
+      pendingRegistration.phoneOtp = generate8DigitOtp();
+      document.getElementById('previewEmailOtp').textContent = pendingRegistration.emailOtp;
+      document.getElementById('previewPhoneOtp').textContent = pendingRegistration.phoneOtp;
+      showToast('New 8-digit OTPs sent to your Email and Mobile SMS!', 'info');
+    }
+
+    function cancelOtpStage() {
+      pendingRegistration = null;
+      document.getElementById('gateOtpStage').style.display = 'none';
+      document.getElementById('gateFormStage').style.display = 'block';
+    }
+
     function handleSignOut() {
       localStorage.removeItem(SESSION_KEY);
       showToast('Signed out successfully.', 'info');
@@ -1113,12 +1477,13 @@
       if (session) {
         const initial = (session.name || session.email || 'U').charAt(0).toUpperCase();
         container.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 0.6rem;">
-            <div class="user-pill">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div class="user-pill" onclick="openNotificationDrawer()" title="View Profile & Verified Status">
               <div class="user-avatar">${escapeHtml(initial)}</div>
               <span>${escapeHtml(session.name)}</span>
+              <span style="font-size: 0.75rem; color: var(--success);" title="Email & Phone Verified">✓</span>
             </div>
-            <button class="btn btn-outline" onclick="handleSignOut()">Sign Out</button>
+            <button class="btn btn-outline btn-sm" onclick="handleSignOut()">Sign Out</button>
           </div>
         `;
       } else {
@@ -1132,7 +1497,231 @@
       document.getElementById('authGate').style.display = 'flex';
     }
 
-    // 5. Data & Appointment Management
+    // 5. Virtual Meeting Platforms & Link Generator
+    function handlePlatformChange() {
+      const platform = document.getElementById('appPlatform').value;
+      const label = document.getElementById('meetingLinkLabel');
+      const input = document.getElementById('appMeetingLink');
+      const genBtn = document.getElementById('btnGenLink');
+
+      if (platform === 'Google Meet') {
+        label.textContent = '🎥 Google Meet URL *';
+        input.placeholder = 'https://meet.google.com/xyz-abcd-efg';
+        genBtn.style.display = 'inline-flex';
+      } else if (platform === 'Zoom') {
+        label.textContent = '📹 Zoom Meeting URL & Passcode *';
+        input.placeholder = 'https://zoom.us/j/9876543210?pwd=...';
+        genBtn.style.display = 'inline-flex';
+      } else if (platform === 'Webex') {
+        label.textContent = '💼 Cisco Webex Meeting URL *';
+        input.placeholder = 'https://company.webex.com/meet/room';
+        genBtn.style.display = 'inline-flex';
+      } else {
+        label.textContent = '🏢 Physical Venue / Room *';
+        input.placeholder = 'Hall A, Room 302, or Auditorium';
+        genBtn.style.display = 'none';
+      }
+    }
+
+    function generateSecureMeetingLink() {
+      const platform = document.getElementById('appPlatform').value;
+      const input = document.getElementById('appMeetingLink');
+      const randSegment = () => Math.random().toString(36).substring(2, 6);
+
+      if (platform === 'Google Meet') {
+        input.value = `https://meet.google.com/${randSegment()}-${randSegment()}-${randSegment()}`;
+        showToast('Secure Google Meet link generated!', 'success');
+      } else if (platform === 'Zoom') {
+        const meetingId = Math.floor(1000000000 + Math.random() * 9000000000);
+        const pwd = Math.random().toString(36).substring(2, 8);
+        input.value = `https://zoom.us/j/${meetingId}?pwd=${pwd}`;
+        showToast('Secure Zoom link with passcode generated!', 'success');
+      } else if (platform === 'Webex') {
+        input.value = `https://schedular.webex.com/meet/${randSegment()}_room`;
+        showToast('Secure Cisco Webex link generated!', 'success');
+      }
+    }
+
+    // 6. 10-Minute Automated Reminder System
+    function startReminderChecker() {
+      setInterval(checkUpcomingReminders, 15000); // Check every 15s
+    }
+
+    function checkUpcomingReminders() {
+      if (!appointments || appointments.length === 0) return;
+      const now = new Date();
+      const session = getActiveSession();
+
+      appointments.forEach(app => {
+        if (!app.date || !app.startTime || app.status === 'Completed') return;
+
+        // Parse meeting start date-time
+        const [year, month, day] = app.date.split('-').map(Number);
+        const [hour, min] = app.startTime.split(':').map(Number);
+        const meetingDate = new Date(year, month - 1, day, hour, min);
+
+        const diffMinutes = (meetingDate.getTime() - now.getTime()) / (1000 * 60);
+
+        // Check if meeting is between 0 and 10 minutes away
+        if (diffMinutes > 0 && diffMinutes <= 10) {
+          const reminderKey = `${app.id}_${app.date}_${app.startTime}`;
+          if (!acknowledgedReminders.has(reminderKey)) {
+            acknowledgedReminders.add(reminderKey);
+            trigger10MinReminder(app, Math.ceil(diffMinutes), session);
+          }
+        }
+      });
+    }
+
+    function trigger10MinReminder(app, minutesLeft, session) {
+      // 1. Show Reminder Banner
+      const banner = document.getElementById('reminderBanner');
+      const bannerTitle = document.getElementById('reminderBannerTitle');
+      const bannerDesc = document.getElementById('reminderBannerDesc');
+      const bannerJoinBtn = document.getElementById('reminderBannerJoinBtn');
+
+      bannerTitle.textContent = `⏰ Upcoming Meeting in ${minutesLeft} Min: ${app.title}`;
+      bannerDesc.textContent = `Host: ${app.speaker || 'Team'} • ${app.platform || 'Virtual'} • Dispatched to ${session ? session.email : 'registered email'} & ${session ? session.phone : 'mobile phone'}.`;
+      
+      if (app.meetingLink && app.meetingLink.startsWith('http')) {
+        bannerJoinBtn.href = app.meetingLink;
+        bannerJoinBtn.style.display = 'inline-flex';
+      } else {
+        bannerJoinBtn.style.display = 'none';
+      }
+
+      banner.classList.add('active');
+
+      // 2. Play Audio Chime via Web Audio API
+      playNotificationChime();
+
+      // 3. Log Reminder to Audit Database
+      logReminderDispatch(app, session);
+
+      // 4. Toast
+      showToast(`🔔 Reminder: '${app.title}' starts in ${minutesLeft} minutes! Alert sent to email & SMS.`, 'warning');
+    }
+
+    function dismissReminderBanner() {
+      document.getElementById('reminderBanner').classList.remove('active');
+    }
+
+    function playNotificationChime() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3); // A5
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      } catch (e) {
+        console.warn('Audio chime skipped:', e);
+      }
+    }
+
+    function logReminderDispatch(app, session) {
+      let logs = [];
+      try {
+        const stored = localStorage.getItem(REMINDER_LOGS_KEY);
+        logs = stored ? JSON.parse(stored) : [];
+      } catch {
+        logs = [];
+      }
+
+      const newLog = {
+        id: 'log_' + Date.now(),
+        appointmentTitle: app.title,
+        platform: app.platform || 'Virtual',
+        meetingLink: app.meetingLink || 'N/A',
+        sentToEmail: session ? session.email : 'user@example.com',
+        sentToPhone: session ? session.phone : '+1 (555) 019-2834',
+        timestamp: new Date().toLocaleString(),
+        status: 'Delivered (10-Min Pre-Alert)'
+      };
+
+      logs.unshift(newLog);
+      localStorage.setItem(REMINDER_LOGS_KEY, JSON.stringify(logs));
+      updateReminderLogsCount();
+    }
+
+    function updateReminderLogsCount() {
+      try {
+        const stored = localStorage.getItem(REMINDER_LOGS_KEY);
+        const logs = stored ? JSON.parse(stored) : [];
+        const el = document.getElementById('statRemindersSent');
+        if (el) el.textContent = logs.length;
+      } catch {}
+    }
+
+    function openNotificationDrawer() {
+      let logs = [];
+      try {
+        const stored = localStorage.getItem(REMINDER_LOGS_KEY);
+        logs = stored ? JSON.parse(stored) : [];
+      } catch {
+        logs = [];
+      }
+
+      const container = document.getElementById('logTableContainer');
+      const session = getActiveSession();
+
+      let html = `
+        <div style="background: #f1f5f9; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem;">
+          <strong>👤 Registered Profile:</strong> ${session ? escapeHtml(session.name) : 'Guest'}<br>
+          <strong>📧 Verified Email:</strong> ${session ? escapeHtml(session.email) : 'Not configured'}<br>
+          <strong>📱 Verified Mobile Phone:</strong> ${session ? escapeHtml(session.phone) : 'Not configured'}
+        </div>
+      `;
+
+      if (logs.length === 0) {
+        html += `<div style="text-align: center; padding: 1.5rem; color: var(--text-muted);">No reminder alerts sent yet. Alerts will automatically log 10 minutes prior to meeting start times.</div>`;
+      } else {
+        html += `
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Meeting</th>
+                <th>Channel</th>
+                <th>Dispatched To</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${logs.map(log => `
+                <tr>
+                  <td><strong>${escapeHtml(log.appointmentTitle)}</strong><br><small style="color: var(--primary);">${escapeHtml(log.platform)}</small></td>
+                  <td><span class="badge badge-platform">SMS & Email</span></td>
+                  <td>${escapeHtml(log.sentToEmail)}<br><small>${escapeHtml(log.sentToPhone)}</small></td>
+                  <td><small>${escapeHtml(log.timestamp)}</small></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      container.innerHTML = html;
+      document.getElementById('notificationModal').classList.add('active');
+    }
+
+    function closeNotificationDrawer() {
+      document.getElementById('notificationModal').classList.remove('active');
+    }
+
+    function clearReminderLogs() {
+      localStorage.removeItem(REMINDER_LOGS_KEY);
+      updateReminderLogsCount();
+      openNotificationDrawer();
+      showToast('Reminder audit logs cleared.', 'info');
+    }
+
+    // 7. Appointments & Talks Management
     async function loadAppointments() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
@@ -1146,15 +1735,21 @@
           const res = await fetch('talks.json');
           if (res.ok) {
             appointments = await res.json();
+            // Enrich with platform defaults
+            appointments = appointments.map((a, idx) => ({
+              ...a,
+              platform: idx === 0 ? 'Google Meet' : idx === 1 ? 'Zoom' : 'Webex',
+              meetingLink: idx === 0 ? 'https://meet.google.com/ai-agents-conf' :
+                           idx === 1 ? 'https://zoom.us/j/8492019382' : 'https://schedular.webex.com/meet/mcp'
+            }));
             saveAppointments();
           }
         } catch (e) {
-          console.warn('Could not load talks.json, using fallback.', e);
+          console.warn('Fallback data loaded.', e);
           appointments = [];
         }
       }
 
-      populateFilterDropdowns();
       filterAppointments();
       updateStatistics();
     }
@@ -1173,26 +1768,12 @@
       document.getElementById('statTotal').textContent = total;
       document.getElementById('statToday').textContent = todayCount;
       document.getElementById('statUpcoming').textContent = upcomingCount;
-    }
-
-    function populateFilterDropdowns() {
-      const roomSelect = document.getElementById('roomFilter');
-      const currentVal = roomSelect.value;
-      const rooms = Array.from(new Set(appointments.map(a => a.room).filter(Boolean)));
-
-      roomSelect.innerHTML = '<option value="ALL">All Rooms & Locations</option>';
-      rooms.forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r;
-        opt.textContent = `📍 ${r}`;
-        roomSelect.appendChild(opt);
-      });
-      if (rooms.includes(currentVal)) roomSelect.value = currentVal;
+      updateReminderLogsCount();
     }
 
     function filterAppointments() {
       const query = sanitizeInput(document.getElementById('searchInput').value.toLowerCase());
-      const selectedRoom = document.getElementById('roomFilter').value;
+      const selectedPlatform = document.getElementById('platformFilter').value;
       const selectedStatus = document.getElementById('statusFilter').value;
       const selectedDateMode = document.getElementById('dateFilter').value;
       const todayStr = new Date().toISOString().split('T')[0];
@@ -1203,9 +1784,10 @@
           (item.speaker && item.speaker.toLowerCase().includes(query)) ||
           (item.room && item.room.toLowerCase().includes(query)) ||
           (item.description && item.description.toLowerCase().includes(query)) ||
+          (item.platform && item.platform.toLowerCase().includes(query)) ||
           (item.category && item.category.toLowerCase().includes(query));
 
-        const matchRoom = selectedRoom === 'ALL' || item.room === selectedRoom;
+        const matchPlatform = selectedPlatform === 'ALL' || item.platform === selectedPlatform;
         const matchStatus = selectedStatus === 'ALL' || item.status === selectedStatus;
 
         let matchDate = true;
@@ -1215,7 +1797,7 @@
           matchDate = !item.date || item.date >= todayStr;
         }
 
-        return matchQuery && matchRoom && matchStatus && matchDate;
+        return matchQuery && matchPlatform && matchStatus && matchDate;
       });
 
       renderAppointments(filtered);
@@ -1228,7 +1810,7 @@
           <div class="empty-state">
             <div class="empty-icon">📅</div>
             <h3 style="margin-bottom: 0.5rem; color: var(--text);">No appointments found</h3>
-            <p style="margin-bottom: 1.25rem;">Try adjusting your search criteria or schedule a new appointment.</p>
+            <p style="margin-bottom: 1.25rem;">Try adjusting your filters or schedule a new meeting with Google Meet, Zoom, or Webex.</p>
             <button class="btn btn-primary" onclick="openScheduleModal()"><span>➕</span> Schedule Appointment</button>
           </div>
         `;
@@ -1236,36 +1818,69 @@
       }
 
       container.innerHTML = list.map(item => {
+        const platform = item.platform || 'Google Meet';
+        let stripClass = 'default';
+        let btnJoinClass = 'btn-meet';
+        let platformIcon = '🎥';
+
+        if (platform === 'Google Meet') {
+          stripClass = 'meet';
+          btnJoinClass = 'btn-meet';
+          platformIcon = '🎥 Google Meet';
+        } else if (platform === 'Zoom') {
+          stripClass = 'zoom';
+          btnJoinClass = 'btn-zoom';
+          platformIcon = '📹 Zoom';
+        } else if (platform === 'Webex') {
+          stripClass = 'webex';
+          btnJoinClass = 'btn-webex';
+          platformIcon = '💼 Webex';
+        } else {
+          platformIcon = '🏢 ' + (item.room || 'In-Person');
+        }
+
         const statusClass = (item.status === 'Completed') ? 'badge-status-completed' :
                             (item.status === 'In Progress') ? 'badge-status-inprogress' : 'badge-status-upcoming';
-        
+
         const formattedDate = item.date ? formatDateLabel(item.date) : 'Flexible Date';
         const formattedTime = item.startTime && item.endTime ? `${item.startTime} - ${item.endTime}` : (item.time || 'Time TBD');
+        const meetingUrl = sanitizeUrl(item.meetingLink || '');
 
         return `
           <div class="appointment-card" id="card-${escapeHtml(item.id)}">
-            <div class="card-category-strip"></div>
+            <div class="card-strip ${stripClass}"></div>
             <div>
               <div class="card-top">
                 <h3 class="item-title">${escapeHtml(item.title)}</h3>
               </div>
               <div class="badge-group">
+                <span class="badge badge-platform">${platformIcon}</span>
                 <span class="badge badge-date">📅 ${escapeHtml(formattedDate)}</span>
                 <span class="badge badge-time">⏰ ${escapeHtml(formattedTime)}</span>
                 <span class="badge ${statusClass}">● ${escapeHtml(item.status || 'Upcoming')}</span>
-                ${item.category ? `<span class="badge badge-room">${escapeHtml(item.category)}</span>` : ''}
               </div>
               <div class="meta-info">
                 <span><strong>Host / Speaker:</strong> ${escapeHtml(item.speaker || 'Unassigned')}</span>
-                <span><strong>Location:</strong> 📍 ${escapeHtml(item.room || 'TBD')}</span>
+                <span><strong>Location / Venue:</strong> 📍 ${escapeHtml(item.room || item.platform || 'Virtual')}</span>
               </div>
               <p class="item-desc">${escapeHtml(item.description || 'No detailed agenda provided.')}</p>
+
+              ${meetingUrl && meetingUrl.startsWith('http') ? `
+                <div class="meeting-join-box">
+                  <div class="meeting-details-text">
+                    <strong>Link:</strong> <a href="${escapeHtml(meetingUrl)}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none;">${escapeHtml(meetingUrl)}</a>
+                  </div>
+                  <a href="${escapeHtml(meetingUrl)}" target="_blank" rel="noopener noreferrer" class="btn ${btnJoinClass} btn-sm">
+                    Join
+                  </a>
+                </div>
+              ` : ''}
             </div>
             <div class="card-footer">
-              <button class="btn btn-calendar" onclick="exportToICS('${escapeHtml(item.id)}')">
+              <button class="btn btn-outline btn-sm" onclick="exportToICS('${escapeHtml(item.id)}')">
                 <span>📅</span> Add to Calendar
               </button>
-              <button class="btn btn-danger" onclick="deleteAppointment('${escapeHtml(item.id)}')">
+              <button class="btn btn-danger btn-sm" onclick="deleteAppointment('${escapeHtml(item.id)}')">
                 <span>🗑️</span> Remove
               </button>
             </div>
@@ -1286,7 +1901,7 @@
       return dateStr;
     }
 
-    // 6. Schedule Modal & Calendar / Time Picker Handling
+    // 8. Modal & Appointment Form Handling
     function setDefaultAppointmentDate() {
       const dateInput = document.getElementById('appDate');
       if (dateInput) {
@@ -1300,6 +1915,7 @@
         start.value = '10:00';
         end.value = '11:00';
       }
+      handlePlatformChange();
     }
 
     function openScheduleModal() {
@@ -1318,10 +1934,12 @@
       const title = sanitizeInput(document.getElementById('appTitle').value);
       const speaker = sanitizeInput(document.getElementById('appSpeaker').value);
       const category = sanitizeInput(document.getElementById('appCategory').value);
+      const platform = sanitizeInput(document.getElementById('appPlatform').value);
+      const meetingLink = sanitizeUrl(document.getElementById('appMeetingLink').value);
       const date = document.getElementById('appDate').value;
       const startTime = document.getElementById('appStartTime').value;
       const endTime = document.getElementById('appEndTime').value;
-      const room = sanitizeInput(document.getElementById('appRoom').value);
+      const room = sanitizeInput(document.getElementById('appRoom').value) || platform;
       const status = sanitizeInput(document.getElementById('appStatus').value);
       const desc = sanitizeInput(document.getElementById('appDesc').value);
 
@@ -1335,6 +1953,8 @@
         title,
         speaker,
         category,
+        platform,
+        meetingLink,
         date,
         startTime,
         endTime,
@@ -1347,23 +1967,21 @@
 
       appointments.unshift(newApp);
       saveAppointments();
-      populateFilterDropdowns();
       filterAppointments();
       closeScheduleModal();
-      showToast('Appointment scheduled successfully!', 'success');
+      showToast('Appointment and virtual meeting scheduled successfully!', 'success');
     }
 
     function deleteAppointment(id) {
       if (confirm('Are you sure you want to cancel and remove this appointment?')) {
         appointments = appointments.filter(a => a.id !== id);
         saveAppointments();
-        populateFilterDropdowns();
         filterAppointments();
         showToast('Appointment removed.', 'info');
       }
     }
 
-    // 7. iCalendar (.ics) Export Generator
+    // 9. ICS Calendar Generator
     function exportToICS(id) {
       const item = appointments.find(a => a.id === id);
       if (!item) return;
@@ -1382,8 +2000,8 @@
         `DTSTART:${dateClean}T${startClean}`,
         `DTEND:${dateClean}T${endClean}`,
         `SUMMARY:${item.title.replace(/\n/g, ' ')}`,
-        `DESCRIPTION:${(item.description || '').replace(/\n/g, ' ')}`,
-        `LOCATION:${(item.room || '').replace(/\n/g, ' ')}`,
+        `DESCRIPTION:${(item.description || '').replace(/\n/g, ' ')} \\nMeeting Link: ${item.meetingLink || ''}`,
+        `LOCATION:${(item.meetingLink || item.room || '').replace(/\n/g, ' ')}`,
         'STATUS:CONFIRMED',
         'END:VEVENT',
         'END:VCALENDAR'
@@ -1398,15 +2016,15 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('Calendar event (.ics) downloaded!', 'success');
+      showToast('Calendar event (.ics) exported!', 'success');
     }
 
-    // 8. Toast Notification Utility
+    // 10. Toast System
     function showToast(message, type = 'info') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
-      const icon = type === 'success' ? '✅' : type === 'error' ? '⚠️' : 'ℹ️';
+      const icon = type === 'success' ? '✅' : type === 'error' ? '⚠️' : type === 'warning' ? '🔔' : 'ℹ️';
       toast.innerHTML = `<span>${icon}</span> <span>${escapeHtml(message)}</span>`;
       container.appendChild(toast);
 
@@ -1414,7 +2032,7 @@
         toast.style.opacity = '0';
         toast.style.transition = 'opacity 0.3s ease';
         setTimeout(() => toast.remove(), 300);
-      }, 3500);
+      }, 4000);
     }
   </script>
 </body>

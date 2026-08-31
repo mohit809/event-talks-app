@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In & Register - Schedular</title>
+  <title>Sign In & 8-Digit OTP Registration - Schedular</title>
   <style>
     :root {
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --accent: #8b5cf6;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #7c3aed;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
@@ -33,7 +33,6 @@
       padding: 1.5rem;
     }
 
-    /* Brand & Clock Logo */
     .brand-logo {
       display: inline-flex;
       align-items: center;
@@ -52,9 +51,9 @@
       width: 42px;
       height: 42px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
       color: white;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
     }
     .clock-svg {
       width: 24px;
@@ -70,7 +69,7 @@
       background: var(--card-bg);
       border-radius: 16px;
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       padding: 2.25rem;
       box-shadow: var(--shadow);
       animation: fadeIn 0.3s ease-out;
@@ -82,7 +81,7 @@
 
     .auth-header {
       text-align: center;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.5rem;
     }
     .auth-header p {
       color: var(--text-muted);
@@ -95,7 +94,7 @@
       background: #f1f5f9;
       padding: 0.25rem;
       border-radius: 10px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
     .tab-btn {
       padding: 0.65rem;
@@ -136,7 +135,7 @@
     .form-group input:focus {
       border-color: var(--primary);
       background: #fff;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
     .password-strength-wrap {
@@ -164,7 +163,7 @@
     .btn-submit {
       width: 100%;
       padding: 0.8rem;
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       color: white;
       border: none;
       border-radius: 8px;
@@ -176,8 +175,35 @@
       box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
     }
     .btn-submit:hover {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
       transform: translateY(-1px);
+    }
+
+    .otp-banner {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 0.85rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      color: #166534;
+    }
+    .otp-input-group input {
+      letter-spacing: 0.35em;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      font-family: monospace;
+      padding: 0.65rem;
+    }
+    .simulated-notification-box {
+      background: #1e293b;
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      border-left: 4px solid var(--accent);
     }
 
     .back-link {
@@ -207,7 +233,6 @@
       justify-content: center;
     }
 
-    /* Toast */
     .toast-container {
       position: fixed;
       bottom: 1.5rem;
@@ -227,6 +252,7 @@
     }
     .toast.error { background: #991b1b; }
     .toast.success { background: #065f46; }
+    .toast.info { background: #1e40af; }
   </style>
 </head>
 <body>
@@ -242,42 +268,81 @@
         </div>
         <span>Schedular</span>
       </a>
-      <p id="authSubtitle">Sign in to manage your appointments & events</p>
+      <p id="authSubtitle">Sign in to manage your appointments & virtual meetings</p>
     </div>
 
-    <div class="tabs">
-      <button class="tab-btn active" id="signInTab" onclick="setMode('signin')">Sign In</button>
-      <button class="tab-btn" id="signUpTab" onclick="setMode('signup')">Sign Up</button>
-    </div>
+    <!-- Main Auth Form Stage -->
+    <div id="authFormStage">
+      <div class="tabs">
+        <button class="tab-btn active" id="signInTab" onclick="setMode('signin')">Sign In</button>
+        <button class="tab-btn" id="signUpTab" onclick="setMode('signup')">Sign Up</button>
+      </div>
 
-    <form id="authForm" onsubmit="handleAuth(event)">
-      <div class="form-group" id="nameGroup" style="display: none;">
-        <label for="name">Full Name *</label>
-        <input type="text" id="name" placeholder="e.g., Alex Mercer" maxlength="60">
-      </div>
-      <div class="form-group">
-        <label for="email">Email Address *</label>
-        <input type="email" id="email" required placeholder="user@example.com" maxlength="100">
-      </div>
-      <div class="form-group">
-        <label for="password">Password *</label>
-        <input type="password" id="password" required placeholder="••••••••" minlength="6" maxlength="128" oninput="checkStrength(this.value)">
-        <div class="password-strength-wrap" id="strengthMeter" style="display: none;">
-          <div class="strength-bar">
-            <div class="strength-fill" id="strengthBarFill"></div>
-          </div>
-          <div class="strength-text">
-            <span id="strengthScoreText">Password strength</span>
-            <span>Min 6 characters</span>
+      <form id="authForm" onsubmit="handleAuth(event)">
+        <div class="form-group" id="nameGroup" style="display: none;">
+          <label for="name">Full Name *</label>
+          <input type="text" id="name" placeholder="e.g., Alex Mercer" maxlength="60">
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" required placeholder="user@example.com" maxlength="100">
+        </div>
+        <div class="form-group" id="phoneGroup" style="display: none;">
+          <label for="phone">Mobile Phone (for 8-Digit SMS OTP) *</label>
+          <input type="tel" id="phone" placeholder="+1 (555) 019-2834" maxlength="20">
+        </div>
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <input type="password" id="password" required placeholder="••••••••" minlength="6" maxlength="128" oninput="checkStrength(this.value)">
+          <div class="password-strength-wrap" id="strengthMeter" style="display: none;">
+            <div class="strength-bar">
+              <div class="strength-fill" id="strengthBarFill"></div>
+            </div>
+            <div class="strength-text">
+              <span id="strengthScoreText">Password strength</span>
+              <span>Min 6 characters</span>
+            </div>
           </div>
         </div>
+        <button type="submit" class="btn-submit" id="submitBtn">Sign In to Dashboard</button>
+      </form>
+    </div>
+
+    <!-- 8-Digit OTP Stage -->
+    <div id="otpStage" style="display: none;">
+      <div class="otp-banner">
+        🔒 <strong>Dual Factor Verification:</strong> 8-digit OTPs have been sent to your email and mobile phone.
       </div>
-      <button type="submit" class="btn-submit" id="submitBtn">Sign In to Dashboard</button>
-    </form>
+      <form id="otpVerifyForm" onsubmit="handleOtpVerify(event)">
+        <div class="form-group">
+          <label for="emailOtp">📧 Email 8-Digit OTP *</label>
+          <div class="otp-input-group">
+            <input type="text" id="emailOtp" required maxlength="8" placeholder="12345678" pattern="[0-9]{8}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="phoneOtp">📱 Mobile SMS 8-Digit OTP *</label>
+          <div class="otp-input-group">
+            <input type="text" id="phoneOtp" required maxlength="8" placeholder="87654321" pattern="[0-9]{8}">
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Verify & Enter Dashboard</button>
+      </form>
+
+      <div class="simulated-notification-box">
+        <div>📨 <strong>Simulated Email Sent:</strong> <span id="previewEmailOtp">--------</span></div>
+        <div style="margin-top: 0.35rem;">📲 <strong>Simulated SMS Sent:</strong> <span id="previewPhoneOtp">--------</span></div>
+      </div>
+
+      <div style="text-align: center; margin-top: 1rem;">
+        <button type="button" class="btn-submit" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border); box-shadow: none; font-size: 0.85rem; padding: 0.4rem;" onclick="resendOtp()">🔄 Resend OTPs</button>
+        <button type="button" class="btn-submit" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border); box-shadow: none; font-size: 0.85rem; padding: 0.4rem; margin-top: 0.5rem;" onclick="cancelOtp()">← Back to Sign In</button>
+      </div>
+    </div>
 
     <div class="security-badge">
       <span>🛡️</span>
-      <span>Client-side WebCrypto SHA-256 • SQL Injection Free</span>
+      <span>Client-side WebCrypto SHA-256 • 8-Digit Dual OTP</span>
     </div>
 
     <a href="index.html" class="back-link">← Go to Schedule Dashboard</a>
@@ -286,12 +351,12 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    const USERS_DB_KEY = 'schedular_users_db_v2';
-    const SESSION_KEY = 'schedular_active_session_v2';
+    const USERS_DB_KEY = 'schedular_users_db_v3';
+    const SESSION_KEY = 'schedular_active_session_v3';
     let mode = 'signin';
+    let pendingReg = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Auto-redirect if already authenticated
       const session = localStorage.getItem(SESSION_KEY);
       if (session) {
         window.location.href = 'index.html';
@@ -310,11 +375,18 @@
       return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
+    function generate8DigitOtp() {
+      const array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      return ((array[0] % 90000000) + 10000000).toString();
+    }
+
     function setMode(newMode) {
       mode = newMode;
       const signInTab = document.getElementById('signInTab');
       const signUpTab = document.getElementById('signUpTab');
       const nameGroup = document.getElementById('nameGroup');
+      const phoneGroup = document.getElementById('phoneGroup');
       const submitBtn = document.getElementById('submitBtn');
       const subtitle = document.getElementById('authSubtitle');
       const meter = document.getElementById('strengthMeter');
@@ -323,15 +395,17 @@
         signInTab.classList.remove('active');
         signUpTab.classList.add('active');
         nameGroup.style.display = 'block';
-        submitBtn.textContent = 'Create Secure Account';
-        subtitle.textContent = 'Create an account to manage your schedule';
+        phoneGroup.style.display = 'block';
+        submitBtn.textContent = 'Continue to 8-Digit OTP Verification';
+        subtitle.textContent = 'Create an account verified via Email & Mobile SMS';
         meter.style.display = 'block';
       } else {
         signUpTab.classList.remove('active');
         signInTab.classList.add('active');
         nameGroup.style.display = 'none';
+        phoneGroup.style.display = 'none';
         submitBtn.textContent = 'Sign In to Dashboard';
-        subtitle.textContent = 'Sign in to manage your appointments & events';
+        subtitle.textContent = 'Sign in to manage your appointments & virtual meetings';
         meter.style.display = 'none';
       }
     }
@@ -365,6 +439,7 @@
       const email = sanitize(document.getElementById('email').value.toLowerCase());
       const password = document.getElementById('password').value;
       const name = sanitize(document.getElementById('name').value);
+      const phone = sanitize(document.getElementById('phone').value);
 
       if (!email || !password) {
         showToast('Email and password are required', 'error');
@@ -380,44 +455,43 @@
       }
 
       if (mode === 'signup') {
+        if (!phone) {
+          showToast('Mobile phone number is required for SMS OTP.', 'error');
+          return;
+        }
+
         if (users.some(u => u.email === email)) {
           showToast('An account with this email already exists.', 'error');
           return;
         }
 
-        const salt = Math.random().toString(36).substring(2);
-        const passwordHash = await hashPassword(password, salt);
-        const newUser = {
-          email,
+        const emailOtp = generate8DigitOtp();
+        const phoneOtp = generate8DigitOtp();
+
+        pendingReg = {
           name: name || email.split('@')[0],
-          salt,
-          passwordHash,
-          registeredAt: new Date().toISOString()
+          email,
+          phone,
+          password,
+          emailOtp,
+          phoneOtp
         };
 
-        users.push(newUser);
-        localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
-
-        const session = {
-          email: newUser.email,
-          name: newUser.name,
-          token: 'sess_' + Math.random().toString(36).substring(2) + Date.now(),
-          createdAt: new Date().toISOString()
-        };
-        localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-
-        showToast('Account created! Redirecting...', 'success');
-        setTimeout(() => { window.location.href = 'index.html'; }, 800);
+        document.getElementById('authFormStage').style.display = 'none';
+        document.getElementById('otpStage').style.display = 'block';
+        document.getElementById('previewEmailOtp').textContent = emailOtp;
+        document.getElementById('previewPhoneOtp').textContent = phoneOtp;
+        showToast('8-digit OTPs sent!', 'info');
       } else {
         const user = users.find(u => u.email === email);
         if (!user) {
           if (users.length === 0) {
             const salt = 'demo_salt';
             const hash = await hashPassword(password, salt);
-            const demo = { email, name: email.split('@')[0], salt, passwordHash: hash };
+            const demo = { email, name: email.split('@')[0], phone: '+1 555-019-2834', salt, passwordHash: hash, emailVerified: true, phoneVerified: true };
             users.push(demo);
             localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
-            localStorage.setItem(SESSION_KEY, JSON.stringify({ email, name: demo.name, token: 'sess_' + Date.now() }));
+            localStorage.setItem(SESSION_KEY, JSON.stringify({ email, name: demo.name, phone: demo.phone, token: 'sess_' + Date.now() }));
             showToast('Welcome! Redirecting...', 'success');
             setTimeout(() => { window.location.href = 'index.html'; }, 800);
             return;
@@ -435,6 +509,7 @@
         const session = {
           email: user.email,
           name: user.name,
+          phone: user.phone || 'Unset',
           token: 'sess_' + Math.random().toString(36).substring(2) + Date.now(),
           createdAt: new Date().toISOString()
         };
@@ -443,6 +518,68 @@
         showToast('Welcome back! Redirecting...', 'success');
         setTimeout(() => { window.location.href = 'index.html'; }, 800);
       }
+    }
+
+    async function handleOtpVerify(e) {
+      e.preventDefault();
+      if (!pendingReg) return;
+
+      const eOtp = document.getElementById('emailOtp').value.trim();
+      const pOtp = document.getElementById('phoneOtp').value.trim();
+
+      if (eOtp !== pendingReg.emailOtp || pOtp !== pendingReg.phoneOtp) {
+        showToast('Invalid 8-digit OTP entered.', 'error');
+        return;
+      }
+
+      const salt = Math.random().toString(36).substring(2);
+      const passwordHash = await hashPassword(pendingReg.password, salt);
+      const newUser = {
+        id: 'usr_' + Date.now(),
+        email: pendingReg.email,
+        name: pendingReg.name,
+        phone: pendingReg.phone,
+        salt,
+        passwordHash,
+        emailVerified: true,
+        phoneVerified: true,
+        registeredAt: new Date().toISOString()
+      };
+
+      let users = [];
+      try {
+        const stored = localStorage.getItem(USERS_DB_KEY);
+        users = stored ? JSON.parse(stored) : [];
+      } catch {}
+      users.push(newUser);
+      localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
+
+      const session = {
+        email: newUser.email,
+        name: newUser.name,
+        phone: newUser.phone,
+        token: 'sess_' + Date.now(),
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+
+      showToast('Verified! Redirecting to dashboard...', 'success');
+      setTimeout(() => { window.location.href = 'index.html'; }, 800);
+    }
+
+    function resendOtp() {
+      if (!pendingReg) return;
+      pendingReg.emailOtp = generate8DigitOtp();
+      pendingReg.phoneOtp = generate8DigitOtp();
+      document.getElementById('previewEmailOtp').textContent = pendingReg.emailOtp;
+      document.getElementById('previewPhoneOtp').textContent = pendingReg.phoneOtp;
+      showToast('New 8-digit OTPs sent!', 'info');
+    }
+
+    function cancelOtp() {
+      pendingReg = null;
+      document.getElementById('otpStage').style.display = 'none';
+      document.getElementById('authFormStage').style.display = 'block';
     }
 
     function showToast(message, type = 'error') {
